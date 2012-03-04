@@ -18,8 +18,6 @@ import com.floreantpos.model.Ticket;
 public class ScipioDialog extends POSDialog {
 
 	private Ticket ticket;
-	private int TEI_MAX_LENGTH = 5;
-	private int PIN_MAX_LENGTH = 4;
 	
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.floreantpos.swing.PosButton btnCancel;
@@ -33,7 +31,6 @@ public class ScipioDialog extends POSDialog {
 	
     MaskFormatter teiFormatter = null;
 	MaskFormatter pinFormatter = null;
-	
 	
 	/**
 	 * Creates new form ScipioDialog
@@ -52,9 +49,6 @@ public class ScipioDialog extends POSDialog {
 		}
         
 		initComponents();
-		
-//		txtTEI.setDocument(new LimitedNumericInput(TEI_MAX_LENGTH));
-//		txtPIN.setDocument(new LimitedNumericInput(PIN_MAX_LENGTH));
 		setResizable(false);
         pack();
 	}
