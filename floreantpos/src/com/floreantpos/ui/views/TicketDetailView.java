@@ -32,6 +32,7 @@ import com.floreantpos.swing.PosButton;
 import com.floreantpos.ui.dialog.CouponAndDiscountDialog;
 import com.floreantpos.ui.dialog.DiscountListDialog;
 import com.floreantpos.ui.dialog.POSMessageDialog;
+import com.floreantpos.ui.dialog.ScipioDialog;
 
 /**
  *
@@ -245,7 +246,35 @@ public class TicketDetailView extends JPanel implements ActionListener {
 
         
         private void doScipio() {
-            System.out.println("in doScipio()");
+			System.out.println("in doScipio()");
+			
+			for (Ticket ticket : tickets) {
+				System.out.println("ticket: " + ticket.getTitle() + " " + ticket.getId());
+			}
+			
+			try {
+				List<Ticket> tickets = getTickets();
+				Ticket ticket = tickets.get(0);
+			
+				ScipioDialog dialog = new ScipioDialog();
+				dialog.setTicket(ticket);
+				dialog.initData();
+				dialog.open();
+				
+				if (!dialog.isCanceled()) {
+					System.out.println("dialog was not cancelled");
+					
+					updateModel();
+					TicketDAO.getInstance().saveOrUpdate(ticket);
+					updateView();
+					
+					if(settleTicketView != null) {
+						settleTicketView.updatePaymentView();
+					}
+				}
+			} catch (Exception e) {
+				POSMessageDialog.showError(this, com.floreantpos.POSConstants.ERROR_MESSAGE, e);
+			}
         }
         
         
