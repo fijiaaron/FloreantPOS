@@ -4,8 +4,8 @@
  */
 package com.floreantpos.ui.dialog;
 
-import javax.swing.JTextField;
-import javax.swing.text.JTextComponent;
+import java.text.ParseException;
+import javax.swing.text.MaskFormatter;
 
 import com.floreantpos.PosException;
 import com.floreantpos.main.Application;
@@ -27,9 +27,13 @@ public class ScipioDialog extends POSDialog {
     private javax.swing.JLabel lblPIN;
     private javax.swing.JLabel lblTEI;
     private com.floreantpos.ui.TitlePanel titlePanel1;
-    private javax.swing.JTextField txtPIN;
-    private javax.swing.JTextField txtTEI;
+    private javax.swing.JFormattedTextField txtPIN;
+    private javax.swing.JFormattedTextField txtTEI;
     // End of variables declaration//GEN-END:variables
+	
+    MaskFormatter teiFormatter = null;
+	MaskFormatter pinFormatter = null;
+	
 	
 	/**
 	 * Creates new form ScipioDialog
@@ -39,7 +43,18 @@ public class ScipioDialog extends POSDialog {
 		System.out.println("in ScipioDialog constructor");
 		
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+	
+        try {
+			teiFormatter = new MaskFormatter("#####");
+			pinFormatter = new MaskFormatter("####");
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+        
 		initComponents();
+		
+//		txtTEI.setDocument(new LimitedNumericInput(TEI_MAX_LENGTH));
+//		txtPIN.setDocument(new LimitedNumericInput(PIN_MAX_LENGTH));
 		setResizable(false);
         pack();
 	}
@@ -51,43 +66,19 @@ public class ScipioDialog extends POSDialog {
 	 */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-
+    	
         titlePanel1 = new com.floreantpos.ui.TitlePanel();
-        txtPIN = new javax.swing.JTextField();
-        lblPIN = new javax.swing.JLabel();
-        txtTEI = new javax.swing.JTextField();
         lblTEI = new javax.swing.JLabel();
         btnOk = new com.floreantpos.swing.PosButton();
         btnCancel = new com.floreantpos.swing.PosButton();
+        txtTEI = new javax.swing.JFormattedTextField(teiFormatter);
+        lblPIN = new javax.swing.JLabel();
+        txtPIN = new javax.swing.JFormattedTextField(pinFormatter);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("SCIPIO INFORMATION");
 
         titlePanel1.setTitle("SCIPIO INFORMATION");
-
-        txtPIN.setText("1234");
-        txtPIN.setMaximumSize(new java.awt.Dimension(36, 20));
-        txtPIN.setMinimumSize(new java.awt.Dimension(24, 20));
-        txtPIN.setPreferredSize(new java.awt.Dimension(36, 20));
-        txtPIN.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtPINActionPerformed(evt);
-            }
-        });
-
-        lblPIN.setText("PIN:");
-        lblPIN.setMaximumSize(new java.awt.Dimension(32, 16));
-        lblPIN.setMinimumSize(new java.awt.Dimension(16, 16));
-        lblPIN.setPreferredSize(new java.awt.Dimension(32, 16));
-
-        txtTEI.setText("12345");
-        txtTEI.setMaximumSize(new java.awt.Dimension(36, 20));
-        txtTEI.setMinimumSize(new java.awt.Dimension(24, 20));
-        txtTEI.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtTEIActionPerformed(evt);
-            }
-        });
 
         lblTEI.setText("TEI:");
         lblTEI.setMaximumSize(new java.awt.Dimension(32, 16));
@@ -98,7 +89,7 @@ public class ScipioDialog extends POSDialog {
         btnOk.setText("OK");
         btnOk.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-            	doOk(evt);
+                doOk(evt);
             }
         });
 
@@ -110,27 +101,45 @@ public class ScipioDialog extends POSDialog {
             }
         });
 
+        txtTEI.setText("12345");
+        txtTEI.setMaximumSize(new java.awt.Dimension(250, 30));
+        txtTEI.setMinimumSize(new java.awt.Dimension(24, 20));
+
+        lblPIN.setText("PIN:");
+        lblPIN.setMaximumSize(new java.awt.Dimension(32, 16));
+        lblPIN.setMinimumSize(new java.awt.Dimension(16, 16));
+        lblPIN.setPreferredSize(new java.awt.Dimension(32, 16));
+
+        txtPIN.setText("1234");
+        txtPIN.setMaximumSize(new java.awt.Dimension(250, 30));
+        txtPIN.setMinimumSize(new java.awt.Dimension(24, 20));
+        txtPIN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPINActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(titlePanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 335, Short.MAX_VALUE)
+            .addComponent(titlePanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addGap(39, 39, 39)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(lblTEI, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblPIN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnOk, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(lblPIN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtPIN, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(txtTEI, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
-                            .addComponent(txtPIN, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(lblTEI, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnOk, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
+                                .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtTEI, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -138,14 +147,18 @@ public class ScipioDialog extends POSDialog {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(titlePanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtTEI, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblTEI, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtPIN, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblPIN, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(lblTEI, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(5, 5, 5)
+                        .addComponent(txtTEI, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(lblPIN, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(5, 5, 5)
+                        .addComponent(txtPIN, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 55, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnOk, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -159,21 +172,6 @@ public class ScipioDialog extends POSDialog {
 		System.out.println("...in ScipioDialog.initData()");
 	}
 	
-	private void txtPINActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPINActionPerformed
-		System.out.println("...in ScipioDialog.txtPINActionPerformed()");
-		System.out.println("action command: " + evt.getActionCommand());
-		JTextField field = (JTextField) evt.getSource();  // not sure if this cast will work
-		System.out.println("text: " + field.getText());
-		
-	}//GEN-LAST:event_txtPINActionPerformed
-
-	private void txtTEIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTEIActionPerformed
-		System.out.println("...in ScipioDialog.txtTEIActionPerformed()");
-		System.out.println("action command: " + evt.getActionCommand());
-		JTextField field = (JTextField) evt.getSource();  // not sure if this cast will work
-		System.out.println("text: " + field.getText());
-	}//GEN-LAST:event_txtTEIActionPerformed
-
 	private void doOk(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOkdoOk
 		try {
 			System.out.println("...in ScipioDialog.doOk()");
@@ -190,6 +188,10 @@ public class ScipioDialog extends POSDialog {
 		System.out.println("... inScipioDialog.doCancel()");
 		dispose();
 	}//GEN-LAST:event_btnCanceldoCancel
+
+	private void txtPINActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPINActionPerformed
+		// TODO add your handling code here:
+	}//GEN-LAST:event_txtPINActionPerformed
 
 
 	public Ticket getTicket() {
