@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<receipt>
+    <application>
+        <appId>123456</appId>
+        <smi>A1234F</smi>
+        <username>username</username>
+    </application>
+    <pos>
+        <name>FloreantPOS</name>
+        <version>1.0.2b</version>
+    </pos>
+    <merchant>
+        <address>
+            <address1>123 Main St.</address1>
+            <address2>Seattle, WA</address2>
+            <address3>98104</address3>
+        </address>
+        <id>0</id>
+        <registerNumber>1</registerNumber>
+        <storeNumber>1</storeNumber>
+        <telephone>
+            <phoneNumber>425-242-4304</phoneNumber>
+        </telephone>
+        <type>restaurant</type>
+    </merchant>
+    <consumer>
+        <name>John Smith</name>
+        <pei>12345</pei>
+        <pin>1234</pin>
+        <tei>123456</tei>
+    </consumer>
+    <ticket>
+        <activated>2012-03-15T12:05:39.168-05:00</activated>
+        <amountDue>0.0</amountDue>
+        <amountPaid>7.39</amountPaid>
+        <created>2012-03-15T12:05:39.168-05:00</created>
+        <items>
+            <description>Coke</description>
+            <inventoryId>1</inventoryId>
+            <qty>2</qty>
+            <unitPrice>2.0</unitPrice>
+        </items>
+        <items>
+            <description>Egg</description>
+            <inventoryId>2</inventoryId>
+            <qty>4</qty>
+            <unitPrice>1.0</unitPrice>
+        </items>
+        <items>
+            <description>Bacon</description>
+            <inventoryId>3</inventoryId>
+            <qty>1</qty>
+            <unitPrice>1.5</unitPrice>
+        </items>
+        <status>PAID</status>
+        <ticketId>5</ticketId>
+    </ticket>
+    <payment>
+        <amountDue>0.0</amountDue>
+        <amountPaid>7.39</amountPaid>
+        <card>
+            <cardHolder>Not Available</cardHolder>
+            <exp>N/A</exp>
+            <number>9876</number>
+            <type>VISA</type>
+        </card>
+        <method>CREDIT_CARD</method>
+        <ticketId>5</ticketId>
+        <tip>2.5</tip>
+    </payment>
+    <coupons>
+        <name>Coupon 1</name>
+        <number>0</number>
+    </coupons>
+    <coupons>
+        <name>Coupon 2</name>
+        <number>0</number>
+    </coupons>
+</receipt>

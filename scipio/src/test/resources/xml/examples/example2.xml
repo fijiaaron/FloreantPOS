@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scipio version="1.0">
+	<transaction date="${tx.date}" time="${tx.time}" />
+	<application id="${app.id}">
+		<username>${user.name}</username>
+	</application>
+	<merchant smi="${merchant.smi}">
+		<name>${merchant.name}</name>
+		<store number="${merchant.store.number}">
+			<telephone>${merchant.store.telephone}</telephone>
+			<register>${register.store.register}<register>
+			<address>
+				<address1>${merchant.address.line1}</address1>
+				<address2>${merchant.address.line2}</address2>
+				<city>${merchant.address.city}</city>
+				<state>${merchant.address.state}</state>
+				<zip>${merchant.address.zip}</zip>
+			</address>
+		</store>
+	</merchant>
+	<consumer pei="${consumer.pei}" tei="${consumer.tei}" pin="${consumer.pin}">
+		<name first="${consumer.name.first}" last="${consumer.name.last"/>
+		<payment method="creditcard">
+			<card-info>
+				<type>${consumer.card.type</type>
+				<last4>${consumer.card.last4</last4>
+				<expiration>
+					<month>${consumer.card.exp.month}</month>
+					<year>${consumer.card.exp.year}</year>
+				</expiration>
+			<card-info>
+		</payment>
+	</consumer>
+	<receipt number="${receipt.number}">
+		<item description="${receipt.items[1].description}"
+			  qty="${receipt.items[1].qty}"
+			  price="${receipt.items[1].price}"
+			  inventory-number="${receipt.items[1].inventorynumber}"/>
+		
+		<item description="${receipt.items[2].description}"
+			  qty="${receipt.items[2].qty}"
+			  price="${receipt.items[2].price}"
+			  inventory-number="${receipt.items[2].inventorynumber}"/>
+		<subtotal>${receipt.subtotal}</subtotal>
+		<tip>${receipt.tip}</tip>
+		<tax>${receipt.tax}</tax>
+		<total>${receipt.total}</total>
+		<total-items>${receipt.items.count}</total-items>
+	</receipt>
+	<coupon name="${coupon.name}" number="${coupon.number}"/>
+</scipio>
+		
