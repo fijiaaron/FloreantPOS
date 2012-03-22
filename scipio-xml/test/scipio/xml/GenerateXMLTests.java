@@ -11,7 +11,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-
 import org.junit.Test;
 
 import scipio.xml.model.ObjectFactory;
@@ -52,6 +51,7 @@ public class GenerateXMLTests {
 		receipt.setTerminal(getTerminal());
 		receipt.setConsumer(getConsumer());
 		receipt.setTransaction(getTransaction());
+		receipt.setPayment(getPayment(getTransaction()));
 		String xml = generateReceiptXML(receipt);
 
 		System.out.println(xml);
@@ -111,7 +111,7 @@ public class GenerateXMLTests {
 		terminal.setName("terminal");
 		return terminal;
 	}
-
+	
 	public Receipt.Transaction getTransaction() throws Exception {
 		Receipt.Transaction transaction = builder.createReceiptTransaction();
 		
@@ -204,6 +204,27 @@ public class GenerateXMLTests {
 		salestax.setRate(0.06);
 		salestax.setTaxableAmount(transaction.getSubtotal().subtract(transaction.getDiscount()));
 		return salestax;
+	}
+	
+
+	public Receipt.Payment getPayment(Receipt.Transaction transaction) {
+		Receipt.Payment payment = builder.createReceiptPayment();
+		payment.setAmountCharged(transaction.getAmountPaid());
+		payment.setAuthorizationCode(1234);
+		payment.setCard(getCreditCard());
+		payment.setGrandTotal(payment.getAmountCharged());
+		payment.setMethod("CREDIT_CARD");
+		return payment;
+	}
+	
+	public Receipt.Payment.Card getCreditCard() {
+		Receipt.Payment.Card creditcard = builder.createReceiptPaymentCard();
+		creditcard.setCardHolder(new Receipt.Payment.Card.CardHolder("Joe", "Smith"));
+		creditcard.setNumber(1234);
+		creditcard.setExpiration("12/2012");
+		creditcard.setType("VISA");
+		
+		return creditcard;
 	}
 	
 	// generate xml

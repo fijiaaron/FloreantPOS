@@ -1246,6 +1246,9 @@ public class Receipt {
             public void setCardHolder(Receipt.Payment.Card.CardHolder value) {
                 this.cardHolder = value;
             }
+            public void setCardHolder(String firstName, String lastName) {
+            	this.cardHolder = new Receipt.Payment.Card.CardHolder();
+            }
 
             /**
              * Gets the value of the expiration property.
@@ -1344,6 +1347,13 @@ public class Receipt {
                 @XmlElement(required = true)
                 protected String lastName;
 
+                // constructors
+                public CardHolder() {}
+                public CardHolder(String firstName, String lastName) {
+                	setFirstName(firstName);
+                	setLastName(lastName);
+                }
+                
                 /**
                  * Gets the value of the firstName property.
                  * 
