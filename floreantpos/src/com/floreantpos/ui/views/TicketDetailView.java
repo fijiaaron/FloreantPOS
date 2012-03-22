@@ -32,6 +32,7 @@ import com.floreantpos.swing.PosButton;
 import com.floreantpos.ui.dialog.CouponAndDiscountDialog;
 import com.floreantpos.ui.dialog.DiscountListDialog;
 import com.floreantpos.ui.dialog.POSMessageDialog;
+import com.floreantpos.ui.dialog.ScipioDialog;
 
 /**
  *
@@ -42,6 +43,9 @@ public class TicketDetailView extends JPanel implements ActionListener {
 	public final static String VIEW_NAME = "TICKET_DETAIL";
 
 	private com.floreantpos.swing.PosButton btnApplyCoupon;
+        //-AE-
+        private com.floreantpos.swing.PosButton btnScipio;
+        
 	private com.floreantpos.swing.POSToggleButton btnTaxExempt;
 	private com.floreantpos.swing.PosButton btnViewDiscounts;
 
@@ -98,10 +102,14 @@ public class TicketDetailView extends JPanel implements ActionListener {
 
 		buttonPanel = new JPanel(new MigLayout("align 50%"));
 		buttonPanel.add(new JSeparator(), "newline, grow,span");
-		buttonPanel.add(btnApplyCoupon = new PosButton(com.floreantpos.POSConstants.COUPON_DISCOUNT), "w 160, h 50, grow, span");
-		buttonPanel.add(btnViewDiscounts = new PosButton(com.floreantpos.POSConstants.VIEW_DISCOUNTS), "newline,w 160, h 50, ax 100%");
-		buttonPanel.add(btnTaxExempt = new POSToggleButton(com.floreantpos.POSConstants.TAX_EXEMPT), "w 160, h 50");
-
+		buttonPanel.add(btnApplyCoupon = new PosButton(com.floreantpos.POSConstants.COUPON_DISCOUNT), "w 160, h 35, grow, span");
+                
+		//-AE-
+		buttonPanel.add(btnScipio = new PosButton(com.floreantpos.POSConstants.SCIPIO), "newline,w 160, h 35, grow, span");
+                
+		buttonPanel.add(btnViewDiscounts = new PosButton(com.floreantpos.POSConstants.VIEW_DISCOUNTS), "newline,w 160, h 35, ax 100%");
+		buttonPanel.add(btnTaxExempt = new POSToggleButton(com.floreantpos.POSConstants.TAX_EXEMPT), "w 160, h 35");
+                
 		JPanel bottomPanel = new JPanel(new BorderLayout(5, 5));
 		bottomPanel.add(balanceDuePanel);
 		bottomPanel.add(buttonPanel, BorderLayout.SOUTH);
@@ -122,6 +130,9 @@ public class TicketDetailView extends JPanel implements ActionListener {
 		btnApplyCoupon.addActionListener(this);
 		btnTaxExempt.addActionListener(this);
 		btnViewDiscounts.addActionListener(this);
+
+		//-AE-
+		btnScipio.addActionListener(this);
 	}
 
 	private JLabel createLabel(String text) {
@@ -233,6 +244,40 @@ public class TicketDetailView extends JPanel implements ActionListener {
 		}
 	}//GEN-LAST:event_btnApplyCoupondoApplyCoupon
 
+	//-AE-
+	private void doScipio() {
+		System.out.println("in TicketDetailView.doScipio()");
+
+		for (Ticket ticket : tickets) {
+			System.out.println("ticket: " + ticket.getTitle() + " " + ticket.getId());
+		}
+
+		try {
+			List<Ticket> tickets = getTickets();
+			Ticket ticket = tickets.get(0);
+
+			ScipioDialog dialog = new ScipioDialog();
+			dialog.setTicket(ticket);
+			dialog.initData();
+			dialog.open();
+
+			if (!dialog.isCanceled()) {
+				System.out.println("dialog was not cancelled");
+
+				updateModel();
+				TicketDAO.getInstance().saveOrUpdate(ticket);
+				updateView();
+
+				if(settleTicketView != null) {
+					settleTicketView.updatePaymentView();
+				}
+			}
+		} catch (Exception e) {
+			POSMessageDialog.showError(this, com.floreantpos.POSConstants.ERROR_MESSAGE, e);
+		}
+	}
+
+        
 	private void updateModel() {
 		List<Ticket> ticketsToSettle = getTickets();
 		for (Ticket ticket : ticketsToSettle) {
@@ -404,11 +449,16 @@ public class TicketDetailView extends JPanel implements ActionListener {
 		if (source == btnApplyCoupon) {
 			doApplyCoupon();
 		}
-		if (source == btnTaxExempt) {
+                //-AE-
+		if (source == btnScipio) {
+                        doScipio();
+                }
+                if (source == btnTaxExempt) {
 			doTaxExempt();
 		}
 		if (source == btnViewDiscounts) {
 			doViewDiscounts();
 		}
+                
 	}
 }
