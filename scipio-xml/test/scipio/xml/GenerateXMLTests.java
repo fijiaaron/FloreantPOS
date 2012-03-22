@@ -6,21 +6,17 @@ import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.GregorianCalendar;
-
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 
 
 import org.junit.Test;
 
 import scipio.xml.model.ObjectFactory;
 import scipio.xml.model.Receipt;
+import scipio.xml.model.Util;
 
 public class GenerateXMLTests {
 
@@ -41,7 +37,10 @@ public class GenerateXMLTests {
 	@Test
 	public void testFromEmptyReceipt() throws Exception {
 		Receipt receipt = new Receipt();
-		generateReceiptXML(receipt);
+		String xml = generateReceiptXML(receipt);
+		assertNotNull(xml);
+		assertTrue(xml.startsWith("<?xml"));
+		assertTrue(xml.contains("receipt"));
 	}
 	
 	@Test
@@ -53,7 +52,14 @@ public class GenerateXMLTests {
 		receipt.setTerminal(getTerminal());
 		receipt.setConsumer(getConsumer());
 		receipt.setTransaction(getTransaction());
-		generateReceiptXML(receipt);
+		String xml = generateReceiptXML(receipt);
+
+		System.out.println(xml);
+		
+		assertNotNull(xml);
+		assertTrue(xml.startsWith("<?xml"));
+		assertTrue(xml.contains("receipt"));
+		assertTrue(xml.contains("<status>PAID</status>"));
 	}
 
 	// create test data
@@ -108,10 +114,12 @@ public class GenerateXMLTests {
 
 	public Receipt.Transaction getTransaction() throws Exception {
 		Receipt.Transaction transaction = builder.createReceiptTransaction();
-		transaction.setCreated(getCalendar(new Date()));
-		transaction.setActivated(getCalendar(new Date()));
+		
 		Receipt.Transaction.Closed closed = new Receipt.Transaction.Closed();
 		closed.setDateAndTime(new Date());
+		
+		transaction.setCreated(Util.getCalendar(new Date()));
+		transaction.setActivated(Util.getCalendar(new Date()));
 		transaction.setClosed(closed);
 		transaction.setTransactionId(5);
 		transaction.setTableNumber((short)1);
@@ -119,6 +127,15 @@ public class GenerateXMLTests {
 		transaction.setServerName("Lucy");
 		transaction.setItems(getItems());
 		transaction.setDiscounts(getDiscounts());
+		transaction.setSalestax(getSalesTax(transaction));
+
+		double tip = 0.50;
+		transaction.setTip(tip);
+		
+		BigDecimal amountPaid = transaction.getGrandTotal();
+		transaction.setAmountPaid(amountPaid);
+		transaction.setStatus(transaction.getStatus());
+		
 		return transaction;
 	}
 	
@@ -128,10 +145,10 @@ public class GenerateXMLTests {
 		Receipt.Transaction.Items.Item item1 = builder.createReceiptTransactionItemsItem();
 		item1.setDescription("Coke");
 		item1.setInventoryId(154);
-		item1.setQty((short)2);
-		item1.setUnitPrice(new BigDecimal(2.00));
+		item1.setQty(2);
+		item1.setUnitPrice(2.00);
 		item1.getTotal();
-		item1.setTotal(int2decimal(item1.getQty()).multiply(item1.getUnitPrice()));
+		item1.setTotal(Util.multiply(item1.getQty(), item1.getUnitPrice()));
 		Receipt.Transaction.Items.Item.Coupon coupon1 = builder.createReceiptTransactionItemsItemCoupon();
 		coupon1.setId(1);
 		item1.setCoupon(coupon1);
@@ -140,16 +157,16 @@ public class GenerateXMLTests {
 		Receipt.Transaction.Items.Item item2 = builder.createReceiptTransactionItemsItem();
 		item2.setDescription("Coke");
 		item2.setInventoryId(154);
-		item2.setQty((short)4);
-		item2.setUnitPrice(new BigDecimal(1.00));
+		item2.setQty(4);
+		item2.setUnitPrice(1.00);
 		
-		item2.setTotal(int2decimal(item2.getQty()).multiply(item2.getUnitPrice()));
+		item2.setTotal(Util.multiply(item2.getQty(), item2.getUnitPrice()));
 		Receipt.Transaction.Items.Item.Coupon coupon2 = builder.createReceiptTransactionItemsItemCoupon();
 		coupon2.setId(10);
 		item2.setCoupon(coupon2);
 		items.getItem().add(item2);
 		
-		BigDecimal subtotal = new BigDecimal(0.00);
+		BigDecimal subtotal = Util.double2decimal(0.00);
 		int quantity = 0;
 		for (Receipt.Transaction.Items.Item item : items.getItem()) {
 			quantity += item.getQty();
@@ -157,7 +174,7 @@ public class GenerateXMLTests {
 		}
 		
 		items.setSubtotal(subtotal);
-		items.setQuantity((short)quantity);
+		items.setQuantity(quantity);
 		return items;
 	}
 	
@@ -169,28 +186,34 @@ public class GenerateXMLTests {
 		coupons.getCoupon().add(new Receipt.Transaction.Discounts.Coupons.Coupon(2, "Coupon 2", 1.00));
 		discounts.setCoupons(coupons);
 		
-		BigDecimal value = new BigDecimal(0.00);
+		BigDecimal value = Util.double2decimal(0.00);
 		int quantity = 0;
 		for (Receipt.Transaction.Discounts.Coupons.Coupon coupon : coupons.getCoupon()) {
 			value = value.add(coupon.getValue());
 			quantity += coupon.getQuantity();
 		}
 		
-		discounts.setQuantity((short) quantity);
+		discounts.setQuantity(quantity);
 		discounts.setValue(value);
 		
 		return discounts;
 	}
 	
+	public Receipt.Transaction.Salestax getSalesTax(Receipt.Transaction transaction) {
+		Receipt.Transaction.Salestax salestax = builder.createReceiptTransactionSalestax();
+		salestax.setRate(0.06);
+		salestax.setTaxableAmount(transaction.getSubtotal().subtract(transaction.getDiscount()));
+		return salestax;
+	}
+	
 	// generate xml
 	
 	public String generateReceiptXML(Receipt receipt) throws JAXBException {
-		System.out.println("...in generateReceiptXML()");
 		
 		JAXBContext context = JAXBContext.newInstance(Receipt.class);
 		Marshaller marshaller = context.createMarshaller();
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-		marshaller.marshal(receipt, System.out);
+		//marshaller.marshal(receipt, System.out);
 
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		marshaller.marshal(receipt, stream);
@@ -207,26 +230,5 @@ public class GenerateXMLTests {
 	}
 	
 	
-	public XMLGregorianCalendar getCalendar(Date date) throws DatatypeConfigurationException {
-		GregorianCalendar cal = (GregorianCalendar) GregorianCalendar.getInstance();
-		cal.setTime(date);
-		XMLGregorianCalendar xcal = null;
-		xcal = DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
-		
-		return xcal;
-	}
-	
-	// BigDecimal helpers
-	public double decimal(double value) {
-		return new BigDecimal(value).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-	}
-
-	public BigDecimal double2decimal(double value) {
-		return new BigDecimal(value).setScale(2, BigDecimal.ROUND_HALF_UP);
-	}
-	
-	public BigDecimal int2decimal(int value) {
-		return new BigDecimal(value).setScale(2, BigDecimal.ROUND_HALF_UP);
-	}
 	
 }

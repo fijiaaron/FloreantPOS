@@ -284,7 +284,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
 })
 @XmlRootElement(name = "receipt")
 public class Receipt {
-
+	public static final int DECIMAL_PLACES = 2;
+	
     @XmlElement(required = true)
     protected Receipt.Application application;
     @XmlElement(required = true)
@@ -1075,6 +1076,9 @@ public class Receipt {
         public void setGrandTotal(BigDecimal value) {
             this.grandTotal = value;
         }
+        public void setGrandTotal(double value) {
+            setGrandTotal(Util.double2decimal(value));
+        }
 
         /**
          * Gets the value of the amountCharged property.
@@ -1098,6 +1102,9 @@ public class Receipt {
          */
         public void setAmountCharged(BigDecimal value) {
             this.amountCharged = value;
+        }
+        public void setAmountCharged(double value) {
+            setAmountCharged(Util.double2decimal(value));
         }
 
         /**
@@ -1712,7 +1719,14 @@ public class Receipt {
     })
     public static class Transaction {
 
-    	// constructors
+    	public static class Status {
+    		public static final String COMP = "COMP/FREE";
+			public static String PAID = "PAID";
+    		public static String NOT_PAID = "NOT PAID";
+    		public static String PARTIALLY_PAID = "PARTIALLY PAID";
+    	}
+
+		// constructors
     	public Transaction() {}
     	public Transaction(int id) {
     		this.transactionId = id;
@@ -1866,6 +1880,9 @@ public class Receipt {
         public void setTableNumber(short value) {
             this.tableNumber = value;
         }
+        public void setTableNumber(int value) {
+         	setTableNumber(Util.int2ushort(value));
+        }
 
         /**
          * Gets the value of the numberofGuests property.
@@ -1881,6 +1898,9 @@ public class Receipt {
          */
         public void setNumberofGuests(short value) {
             this.numberofGuests = value;
+        }
+        public void setNumberofGuests(int value) {
+            setNumberofGuests(Util.int2ushort(value));
         }
 
         /**
@@ -1964,7 +1984,15 @@ public class Receipt {
          *     
          */
         public BigDecimal getSubtotal() {
-            return subtotal;
+        	if (subtotal == null) {
+	        	subtotal = new BigDecimal(0.00);
+	        	
+	        	for (Items.Item item : getItems().getItem()) {
+	        		subtotal = subtotal.add(item.getTotal());
+	        	}
+        	}
+        	
+        	return subtotal.setScale(Receipt.DECIMAL_PLACES);
         }
 
         /**
@@ -1978,6 +2006,9 @@ public class Receipt {
         public void setSubtotal(BigDecimal value) {
             this.subtotal = value;
         }
+        public void setSubTotal(double value) {
+        	setSubtotal(Util.double2decimal(value));
+        }
 
         /**
          * Gets the value of the discount property.
@@ -1988,7 +2019,11 @@ public class Receipt {
          *     
          */
         public BigDecimal getDiscount() {
-            return discount;
+        	if (discount == null) {
+        		discount = discounts.getValue();
+        	}
+        	
+            return discount.setScale(Receipt.DECIMAL_PLACES);
         }
 
         /**
@@ -2002,6 +2037,10 @@ public class Receipt {
         public void setDiscount(BigDecimal value) {
             this.discount = value;
         }
+        public void setDiscount(double value) {
+        	setDiscount(Util.double2decimal(value));
+        }
+        
 
         /**
          * Gets the value of the total property.
@@ -2012,7 +2051,11 @@ public class Receipt {
          *     
          */
         public BigDecimal getTotal() {
-            return total;
+        	if (total == null) {
+        		total = getSubtotal().subtract(getDiscount());
+        	}
+        	
+            return total.setScale(Receipt.DECIMAL_PLACES);
         }
 
         /**
@@ -2025,6 +2068,9 @@ public class Receipt {
          */
         public void setTotal(BigDecimal value) {
             this.total = value;
+        }
+        public void setTotal(double value) {
+        	setTotal(Util.double2decimal(value));
         }
 
         /**
@@ -2060,7 +2106,11 @@ public class Receipt {
          *     
          */
         public BigDecimal getTax() {
-            return tax;
+        	if (tax == null) {
+        		tax = getSalestax().getTotal();
+        	}
+        	
+            return tax.setScale(Receipt.DECIMAL_PLACES);
         }
 
         /**
@@ -2074,6 +2124,9 @@ public class Receipt {
         public void setTax(BigDecimal value) {
             this.tax = value;
         }
+        public void setTax(double value) {
+        	setTax(Util.double2decimal(value));
+        }
 
         /**
          * Gets the value of the tip property.
@@ -2084,7 +2137,11 @@ public class Receipt {
          *     
          */
         public BigDecimal getTip() {
-            return tip;
+        	if (tip == null) {
+        		tip = Util.decimal(0.00);
+        	}
+        	
+            return tip.setScale(Receipt.DECIMAL_PLACES);
         }
 
         /**
@@ -2098,6 +2155,9 @@ public class Receipt {
         public void setTip(BigDecimal value) {
             this.tip = value;
         }
+        public void setTip(double value) {
+        	setTip(Util.double2decimal(value));
+        }
 
         /**
          * Gets the value of the grandTotal property.
@@ -2108,7 +2168,13 @@ public class Receipt {
          *     
          */
         public BigDecimal getGrandTotal() {
-            return grandTotal;
+            if (grandTotal == null) {
+            	grandTotal = getTotal();
+            	grandTotal = grandTotal.add(getTax());
+            	grandTotal = grandTotal.add(getTip());
+            }
+            
+            return grandTotal.setScale(Receipt.DECIMAL_PLACES);
         }
 
         /**
@@ -2122,6 +2188,9 @@ public class Receipt {
         public void setGrandTotal(BigDecimal value) {
             this.grandTotal = value;
         }
+        public void setGrandTotal(double value) {
+        	setGrandTotal(Util.double2decimal(value));
+        }
 
         /**
          * Gets the value of the status property.
@@ -2132,6 +2201,23 @@ public class Receipt {
          *     
          */
         public String getStatus() {
+        	if (status == null) {
+        		double amountPaid = getAmountPaid().doubleValue();
+        		double totalDue = getGrandTotal().doubleValue() - getTip().doubleValue();
+        		
+        		if (amountPaid >= totalDue ) {
+        			status = Transaction.Status.PAID;
+        		}
+        		else if (amountPaid > 0) {
+        			status = Transaction.Status.PARTIALLY_PAID;
+        		}
+        		else if (totalDue == 0) {
+        			status = Transaction.Status.COMP;
+        		}
+        		else {
+        			status = Transaction.Status.NOT_PAID;
+        		}
+           	}
             return status;
         }
 
@@ -2156,7 +2242,7 @@ public class Receipt {
          *     
          */
         public BigDecimal getAmountPaid() {
-            return amountPaid;
+            return amountPaid.setScale(Receipt.DECIMAL_PLACES);
         }
 
         /**
@@ -2169,6 +2255,9 @@ public class Receipt {
          */
         public void setAmountPaid(BigDecimal value) {
             this.amountPaid = value;
+        }
+        public void setAmountPaid(double value) {
+        	setAmountPaid(Util.double2decimal(value));
         }
 
 
@@ -2418,6 +2507,9 @@ public class Receipt {
             public void setQuantity(short value) {
                 this.quantity = value;
             }
+            public void setQuantity(int value) {
+            	setQuantity(Util.int2ushort(value));
+            }
 
             /**
              * Gets the value of the value property.
@@ -2441,6 +2533,9 @@ public class Receipt {
              */
             public void setValue(BigDecimal value) {
                 this.value = value;
+            }
+            public void setValue(double value) {
+                setValue(Util.double2decimal(value));
             }
 
 
@@ -2562,14 +2657,14 @@ public class Receipt {
                     public Coupon(int id, String name, double value) { 
                     	this.id = id;
                     	this.name = name;
-                    	this.value = new BigDecimal(value);
+                    	this.value = Util.double2decimal(value);
                     	this.quantity = 1;
                     }
                     public Coupon(int id, String name, double value, int qty) { 
                     	this.id = id;
                     	this.name = name;
-                    	this.value = new BigDecimal(value);
-                    	this.quantity = (short)qty;
+                    	this.value = Util.double2decimal(value);
+                    	this.quantity = Util.int2ushort(qty);
                     }
                     
                     /**
@@ -2635,6 +2730,9 @@ public class Receipt {
                     public void setValue(BigDecimal value) {
                         this.value = value;
                     }
+                    public void setValue(double value) {
+                        setValue(Util.double2decimal(value));
+                    }
 
                     /**
                      * Gets the value of the quantity property.
@@ -2650,6 +2748,9 @@ public class Receipt {
                      */
                     public void setQuantity(short value) {
                         this.quantity = value;
+                    }
+                    public void setQuantity(int value) {
+                        setQuantity(Util.int2ushort(value));
                     }
 
                 }
@@ -2764,6 +2865,9 @@ public class Receipt {
             public void setQuantity(short value) {
                 this.quantity = value;
             }
+            public void setQuantity(int value) {
+                setQuantity(Util.int2ushort(value));
+            }
 
             /**
              * Gets the value of the subtotal property.
@@ -2774,7 +2878,15 @@ public class Receipt {
              *     
              */
             public BigDecimal getSubtotal() {
-                return subtotal;
+            	if (subtotal == null) {
+            		subtotal = new BigDecimal(0.00);
+	            	
+	            	for (Item item : getItem()) {
+	        			subtotal = Util.add(subtotal, item.getTotal());
+	        		}
+            	}
+            	
+            	return subtotal;
             }
 
             /**
@@ -2787,6 +2899,9 @@ public class Receipt {
              */
             public void setSubtotal(BigDecimal value) {
                 this.subtotal = value;
+            }
+            public void setSubtotal(double value) {
+                setSubtotal(Util.double2decimal(value));
             }
 
 
@@ -2903,6 +3018,9 @@ public class Receipt {
                 public void setQty(short value) {
                     this.qty = value;
                 }
+                public void setQty(int value) {
+                    setQty(Util.int2ushort(value));
+                }
 
                 /**
                  * Gets the value of the unitPrice property.
@@ -2926,6 +3044,9 @@ public class Receipt {
                  */
                 public void setUnitPrice(BigDecimal value) {
                     this.unitPrice = value;
+                }
+                public void setUnitPrice(double value) {
+                    setUnitPrice(Util.double2decimal(value));
                 }
 
                 /**
@@ -2974,6 +3095,9 @@ public class Receipt {
                  */
                 public void setTotal(BigDecimal value) {
                     this.total = value;
+                }
+                public void setTotal(double value) {
+                    setTotal(Util.double2decimal(value));
                 }
 
 
@@ -3071,6 +3195,19 @@ public class Receipt {
             @XmlElement(required = true)
             protected BigDecimal total;
 
+            // constructors
+            public Salestax() {}
+            public Salestax(BigDecimal rate) { this.rate = rate; }
+            public Salestax(double rate) { this.rate = Util.double2decimal(rate); }
+            public Salestax(BigDecimal rate, BigDecimal taxableAmount) { 
+            	setRate(rate); 
+            	setTaxableAmount(taxableAmount);
+            }
+            public Salestax(double rate, double taxableAmount) { 
+            	setRate(rate); 
+            	setTaxableAmount(taxableAmount);
+            }
+            
             /**
              * Gets the value of the rate property.
              * 
@@ -3080,7 +3217,7 @@ public class Receipt {
              *     
              */
             public BigDecimal getRate() {
-                return rate;
+                return rate.setScale(Receipt.DECIMAL_PLACES);
             }
 
             /**
@@ -3094,6 +3231,9 @@ public class Receipt {
             public void setRate(BigDecimal value) {
                 this.rate = value;
             }
+			public void setRate(double rate) {
+				this.rate = Util.double2decimal(rate);
+			}
 
             /**
              * Gets the value of the taxableAmount property.
@@ -3104,7 +3244,7 @@ public class Receipt {
              *     
              */
             public BigDecimal getTaxableAmount() {
-                return taxableAmount;
+                return taxableAmount.setScale(Receipt.DECIMAL_PLACES);
             }
 
             /**
@@ -3118,6 +3258,9 @@ public class Receipt {
             public void setTaxableAmount(BigDecimal value) {
                 this.taxableAmount = value;
             }
+            public void setTaxableAmount(double value) {
+                setTaxableAmount(Util.double2decimal(value));
+            }
 
             /**
              * Gets the value of the total property.
@@ -3128,7 +3271,11 @@ public class Receipt {
              *     
              */
             public BigDecimal getTotal() {
-                return total;
+            	if (total == null) {
+            		total = getTaxableAmount().multiply(getRate()).setScale(Receipt.DECIMAL_PLACES);
+            	}
+            	
+                return total.setScale(Receipt.DECIMAL_PLACES);
             }
 
             /**
@@ -3142,6 +3289,10 @@ public class Receipt {
             public void setTotal(BigDecimal value) {
                 this.total = value;
             }
+            public void setTotal(double value) {
+                setTotal(Util.double2decimal(value));
+            }
+
 
         }
 
