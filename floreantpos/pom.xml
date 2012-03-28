@@ -270,5 +270,5 @@
 			<url>file://${project.basedir}/local-lib</url>
 		</repository>
 	</repositories>
-
+    <name>scipio-floreantpos</name>
 </project>
