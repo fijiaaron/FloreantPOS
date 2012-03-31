@@ -17,6 +17,8 @@ import com.floreantpos.ui.dialog.POSMessageDialog;
 import com.floreantpos.ui.dialog.PaymentTypeSelectionDialog;
 import com.floreantpos.ui.dialog.TransactionCompletionDialog;
 import com.floreantpos.ui.views.order.RootView;
+import scipio.xml.services.ScipioException;
+import scipio.xml.services.ScipioXMLWriterService;
 
 public abstract class PaymentView extends JPanel {
 	protected SettleTicketView settleTicketView;
@@ -131,8 +133,13 @@ public abstract class PaymentView extends JPanel {
 			try {
 				for (Ticket ticket : ticketsToSettle) {
 					PosPrintService.printTicket(ticket);
+					ScipioXMLWriterService writer = new ScipioXMLWriterService();
+					writer.writeReceipt(ticket);
 				}
-			}catch(Exception ee) {
+			} catch(ScipioException e) {
+				POSMessageDialog.showError(Application.getPosWindow(), "Scipio Error", e);
+			}
+			catch(Exception ee) {
 				POSMessageDialog.showError(Application.getPosWindow(), com.floreantpos.POSConstants.PRINT_ERROR, ee);
 			}
 			

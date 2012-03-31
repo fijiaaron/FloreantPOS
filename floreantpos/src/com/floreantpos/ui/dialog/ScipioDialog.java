@@ -1,7 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+//-AE-
+
 package com.floreantpos.ui.dialog;
 
 import java.text.ParseException;
@@ -9,7 +7,9 @@ import javax.swing.text.MaskFormatter;
 
 import com.floreantpos.PosException;
 import com.floreantpos.main.Application;
+import com.floreantpos.model.ScipioInfo;
 import com.floreantpos.model.Ticket;
+import com.floreantpos.model.dao.ScipioInfoDAO;
 
 /**
  *
@@ -18,7 +18,8 @@ import com.floreantpos.model.Ticket;
 public class ScipioDialog extends POSDialog {
 
 	private Ticket ticket;
-	
+	private ScipioInfo scipio;
+			
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.floreantpos.swing.PosButton btnCancel;
     private com.floreantpos.swing.PosButton btnOk;
@@ -34,6 +35,8 @@ public class ScipioDialog extends POSDialog {
     MaskFormatter teiFormatter = null;
 	MaskFormatter pinFormatter = null;
 	MaskFormatter peiFormatter = null;
+	
+	
 	
 	/**
 	 * Creates new form ScipioDialog
@@ -192,9 +195,25 @@ public class ScipioDialog extends POSDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-	public void initData() {
+	public void initData() throws Exception {
 		System.out.println("...in ScipioDialog.initData()");
 		System.out.println("ticket: " + ticket.getId());
+		
+//		ScipioInfoDAO dao = new ScipioInfoDAO();
+//		dao.createNewSession();
+//		
+//		try {
+//			System.out.println("looking for scipioInfo for ticket");
+//			scipio = dao.getScipioInfo(ticket);
+//		} 
+//		catch (Exception e) {
+//			System.out.println("scipioInfo not found for ticket");
+//			scipio = new ScipioInfo();
+//			//e.printStackTrace();
+//		}
+//
+//		System.out.println(scipio);
+		
 	}
 
 	// temporarily added to workaround Netbeans dialog code generation
@@ -205,10 +224,28 @@ public class ScipioDialog extends POSDialog {
 	private void doOk(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOkdoOk
 		try {
 			System.out.println("...in ScipioDialog.doOk()");
-		
 			
-			//TODO: attach TIE & PIN to ticket
+			if (scipio == null) {
+				System.out.println("scipio is null");
+				scipio = new ScipioInfo();
+			}
 			
+			try {
+				scipio.setTEI(txtTEI.getText());
+				scipio.setPEI(txtPEI.getText());
+				scipio.setPIN(txtPIN.getText());
+				scipio.setTicket(ticket);
+				
+//				ScipioInfoDAO dao = ScipioInfoDAO.getInstance();
+//				dao.createNewSession();
+//				dao.save(scipio);
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+				
+				throw new PosException("Scipio info is not valid.\n" + e.getMessage());	
+			}
+				
 			setCanceled(false);
 			dispose();
 		} catch (PosException e) {
@@ -223,6 +260,7 @@ public class ScipioDialog extends POSDialog {
 	}
 	private void doCancel(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCanceldoCancel
 		System.out.println("... inScipioDialog.doCancel()");
+		setCanceled(true);
 		dispose();
 	}//GEN-LAST:event_btnCanceldoCancel
 
@@ -241,5 +279,9 @@ public class ScipioDialog extends POSDialog {
 
 	public void setTicket(Ticket ticket) {
 		this.ticket = ticket;
+	}
+	
+	public ScipioInfo getScipioInfo() {
+		return scipio;
 	}
 }

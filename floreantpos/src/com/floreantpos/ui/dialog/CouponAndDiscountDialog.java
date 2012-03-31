@@ -301,6 +301,7 @@ public class CouponAndDiscountDialog extends POSDialog implements ActionListener
 				POSMessageDialog.showError(this, "Please select a coupon/discount");
 				return;
 			}
+		
 			setCanceled(false);
 			dispose();
 		} catch (PosException e) {

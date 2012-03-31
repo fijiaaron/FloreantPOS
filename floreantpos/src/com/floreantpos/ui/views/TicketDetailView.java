@@ -24,8 +24,10 @@ import javax.swing.JTextField;
 import net.miginfocom.swing.MigLayout;
 
 import com.floreantpos.main.Application;
+import com.floreantpos.model.ScipioInfo;
 import com.floreantpos.model.Ticket;
 import com.floreantpos.model.TicketCouponAndDiscount;
+import com.floreantpos.model.dao.ScipioInfoDAO;
 import com.floreantpos.model.dao.TicketDAO;
 import com.floreantpos.swing.POSToggleButton;
 import com.floreantpos.swing.PosButton;
@@ -43,8 +45,8 @@ public class TicketDetailView extends JPanel implements ActionListener {
 	public final static String VIEW_NAME = "TICKET_DETAIL";
 
 	private com.floreantpos.swing.PosButton btnApplyCoupon;
-        //-AE-
-        private com.floreantpos.swing.PosButton btnScipio;
+	//-AE-
+    private com.floreantpos.swing.PosButton btnScipio;
         
 	private com.floreantpos.swing.POSToggleButton btnTaxExempt;
 	private com.floreantpos.swing.PosButton btnViewDiscounts;
@@ -72,7 +74,9 @@ public class TicketDetailView extends JPanel implements ActionListener {
 	private JPanel buttonPanel;
 
 	private List<Ticket> tickets;
-
+	//-AE-
+	private ScipioInfo scipio;
+		
 	/** Creates new form TicketInfoView */
 	public TicketDetailView() {
 
@@ -260,10 +264,20 @@ public class TicketDetailView extends JPanel implements ActionListener {
 			dialog.setTicket(ticket);
 			dialog.initData();
 			dialog.open();
-
-			if (!dialog.isCanceled()) {
+			
+			if ( ! dialog.isCanceled()) {
 				System.out.println("dialog was not cancelled");
-
+				scipio = dialog.getScipioInfo();
+				System.out.println("Scipio Info:");
+				System.out.println("TEI: " + scipio.getTEI());
+				System.out.println("PEI: " + scipio.getPEI());
+				System.out.println("PIN: " + scipio.getPIN());
+				
+				ticket = scipio.getTicket();
+				System.out.println("Ticket ID: " + ticket.getId());
+				
+//				ScipioInfoDAO.getInstance().saveOrUpdate(scipio);
+				
 				updateModel();
 				TicketDAO.getInstance().saveOrUpdate(ticket);
 				updateView();
@@ -449,15 +463,15 @@ public class TicketDetailView extends JPanel implements ActionListener {
 		if (source == btnApplyCoupon) {
 			doApplyCoupon();
 		}
-                //-AE-
-		if (source == btnScipio) {
-                        doScipio();
-                }
-                if (source == btnTaxExempt) {
+		if (source == btnTaxExempt) {
 			doTaxExempt();
 		}
 		if (source == btnViewDiscounts) {
 			doViewDiscounts();
+		}
+		//-AE-
+		if (source == btnScipio) {
+			doScipio();
 		}
                 
 	}
