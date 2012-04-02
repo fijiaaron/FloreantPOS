@@ -226,7 +226,7 @@ public class ScipioDialog extends POSDialog {
 			System.out.println("...in ScipioDialog.doOk()");
 			
 			if (scipio == null) {
-				System.out.println("scipio is null");
+				System.out.println("scipio is null... creating new ScipioInfo object");
 				scipio = new ScipioInfo();
 			}
 			

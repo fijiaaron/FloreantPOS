@@ -1,20 +1,21 @@
 //-AE-
 package scipio.xml.services;
 
-import com.floreantpos.model.Restaurant;
-import com.floreantpos.model.ScipioInfo;
+
+import com.floreantpos.model.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Properties;
-import java.util.HashMap;
-
-import com.floreantpos.model.Ticket;
-import com.floreantpos.model.dao.RestaurantDAO;
 import java.io.*;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.apache.log4j.Logger;
+
+import com.floreantpos.model.dao.RestaurantDAO;
+import java.util.List;
+import org.apache.log4j.BasicConfigurator;
+
 
 import scipio.xml.model.Receipt;
 import scipio.xml.model.Receipt.Application;
@@ -26,15 +27,20 @@ import scipio.xml.model.Receipt.Payment.Card;
 import scipio.xml.model.Receipt.Pos;
 import scipio.xml.model.Receipt.Terminal;
 import scipio.xml.model.Receipt.Transaction;
+import scipio.xml.model.Receipt.Transaction.Discounts;
 import scipio.xml.model.Receipt.Transaction.Discounts.Coupons.Coupon;
+import scipio.xml.model.Receipt.Transaction.Items;
 import scipio.xml.model.Receipt.Transaction.Items.Item;
 import scipio.xml.model.Receipt.Transaction.Salestax;
 import scipio.xml.model.Util;
 
 public class ReceiptBuilder {
 
+	public static String ScipioPropertiesFileName = "scipio.properties";
+	
 	Properties scipio;
-	private static final Logger log = Logger.getLogger(ReceiptBuilder.class.getName());
+	
+	private static Logger logger = Logger.getLogger(ReceiptBuilder.class);
 	
 	public ReceiptBuilder() {
 		scipio = getScipioProperties();
@@ -45,38 +51,31 @@ public class ReceiptBuilder {
 				
 		try {
 			applicationDir = new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile();
-			System.out.println(applicationDir.getCanonicalPath());
 		} catch (URISyntaxException ex) {
-			System.out.println(ex.getMessage());
-			ex.printStackTrace();
-		} catch (IOException ex) {
-			System.out.println(ex.getMessage());
-			ex.printStackTrace();
+			logger.warn(ex.getMessage());
+			logger.debug(ex.getStackTrace().toString());
 		}
-		
 		return applicationDir;
 	}
 		
 	public File getScipioPropertiesFile() throws IOException {
-		String path = getApplicationDir().getCanonicalPath() + "/" + "scipio.properties";
+		String path = getApplicationDir().getCanonicalPath() + "/" + ScipioPropertiesFileName;
 		return new File(path);
 	}
 	
 	public Properties getScipioProperties() {
-		Properties properties = null;
+		Properties properties = new Properties();
 		
 		try {
-			properties = new Properties();
-			InputStream in = new FileInputStream(getScipioPropertiesFile());
-			properties.load(in);
+			File scipioPropertiesFile = getScipioPropertiesFile();
+			if (scipioPropertiesFile.canRead()) {
+				InputStream in = new FileInputStream(getScipioPropertiesFile());
+				properties.load(in);
+			}
 		} catch (FileNotFoundException ex) {
-			System.out.println(ex.getMessage());
-			ex.printStackTrace();
-			//Logger.getLogger(ReceiptBuilder.class.getName()).log(Level.SEVERE, null, ex);
+			logger.warn(ScipioPropertiesFileName + "file not found.", ex);
 		} catch (IOException ex) {
-			//Logger.getLogger(ReceiptBuilder.class.getName()).log(Level.SEVERE, null, ex);
-			System.out.println(ex.getMessage());
-			ex.printStackTrace();
+			logger.warn(ScipioPropertiesFileName + "file not readable.", ex);
 		}
 		
 		return properties;
@@ -84,54 +83,114 @@ public class ReceiptBuilder {
 	
 	
 	public Receipt createReceipt(Ticket ticket) throws ScipioException, Exception {
-
-		Receipt r = new Receipt();
-
-		String appId = scipio.getProperty("application.id");
-		Application application = new Application(appId);
-
-		String posName = scipio.getProperty("pos.name");
-		String posVersion = scipio.getProperty("pos.version");
-		Pos pos = new Pos(posName, posVersion);
-
-		r.setApplication(application);
-		r.setPos(pos);
-		
+		Receipt receipt = new Receipt();
 		Restaurant restaurant = RestaurantDAO.getInstance().get(Integer.valueOf(1));
-		Merchant merchant = new Merchant();
-		merchant.setType("restaurant");
-		merchant.setId(restaurant.getId());
-		merchant.setAddress(new Address(restaurant.getAddressLine1(), restaurant.getAddressLine2(), restaurant.getAddressLine3()));
-		merchant.setTelephone(restaurant.getTelephone());
-		merchant.setSmi(scipio.getProperty("merchant.smi"));
-		merchant.setStoreNumber(scipio.getProperty("merchant.store.number"));
-		merchant.setUsername(scipio.getProperty("merchant.username"));
-		r.setMerchant(merchant);
-		
+		User user = ticket.getOwner();
 		ScipioInfo scipioInfo = new ScipioInfo();
 		
 		//TODO: get ScipioInfo from database
-		int pei = Integer.valueOf(scipio.getProperty("consumer.pei"));
 		int pin = 1234;
 		int tei = 12345;
+		int pei = 123456;
+		
 		scipioInfo.setPEI(pei);
 		scipioInfo.setPIN(tei);
 		scipioInfo.setTEI(pin);
 		
-		Consumer consumer = new Consumer(scipioInfo.getPEI(), scipioInfo.getPIN(), scipioInfo.getTEI());
+		/* application */
+		String appId = scipio.getProperty("application.id");
+		Application application = new Application(appId);
+		receipt.setApplication(application);
 		
-		r.setConsumer(consumer);
-		return r;
+		/* pos */
+		String posName = scipio.getProperty("pos.name");
+		String posVersion = scipio.getProperty("pos.version");
+		Pos pos = new Pos(posName, posVersion);
+		receipt.setPos(pos);
+
+		/* merchant */
+		Merchant merchant = new Merchant();
+		merchant.setType("restaurant");
+		merchant.setId(scipio.getProperty("merchant.id"));
+		merchant.setSmi(scipio.getProperty("merchant.smi"));
+		merchant.setAddress(new Address(restaurant.getAddressLine1(), restaurant.getAddressLine2(), restaurant.getAddressLine3()));
+		merchant.setTelephone(restaurant.getTelephone());
+		merchant.setStoreNumber(restaurant.getId());
+		merchant.setUsername(user.getFirstName() + " " + user.getLastName());
+		receipt.setMerchant(merchant);
+		
+		/* terminal */
+		receipt.setTerminal(new Terminal(ticket.getTerminal().getId(), ticket.getTerminal().getName()));
+		
+		/* consumer */
+		Consumer consumer = new Consumer(scipioInfo.getPEI(), scipioInfo.getPIN(), scipioInfo.getTEI());
+		receipt.setConsumer(consumer);
+		
+		/* transaction */
+		Transaction transaction = new Transaction(ticket.getId());
+		transaction.setActivated(ticket.getActiveDate());
+		transaction.setCreated(ticket.getCreateDate());
+		transaction.setClosed(ticket.getClosingDate());
+		transaction.setTableNumber(ticket.getTableNumber());
+		transaction.setNumberofGuests(ticket.getNumberOfGuests());
+		transaction.setServerName(user.getFirstName() + " " + user.getLastName()); // is server the same as owner?
+		
+		/* transaction items */
+		Items items = new Transaction.Items();
+		for (TicketItem i : ticket.getTicketItems()) {
+			Item item = new Item();
+			item.setItemId(i.getItemId());
+			item.setDescription(i.getCategoryName() + " " + i.getGroupName() + " " + i.getName() );
+			item.setQty(i.getItemCount());
+			item.setUnitPrice(i.getUnitPrice());
+			logger.info("i.getTotalAmount()" + i.getTotalAmount());
+			item.setTotal(i.getTotalAmount());
+			logger.info("calculated item total" + Util.multiply(i.getItemCount(), i.getUnitPrice())); //TODO: doesn't handle item discounts
+			item.setCoupon(null);  // coupons at item level don't apply
+			
+			items.getItem().add(item);	
+		}
+		
+		int itemsQty = 0;
+		BigDecimal itemsSubtotal = new BigDecimal(0.00);
+		for (Item item : transaction.getItems().getItem()) {
+			itemsQty += item.getQty();
+			itemsSubtotal = itemsSubtotal.add(item.getTotal());
+		}
+		transaction.getItems().setQuantity(itemsQty);
+		transaction.getItems().setSubtotal(itemsSubtotal);
+		
+		transaction.setItems(items);
+	
+		/*transaction discounts */
+		transaction.setDiscounts(null);
+		Discounts discounts = new Transaction.Discounts();
+		if (ticket.getCouponAndDiscounts() != null) {
+			for (TicketCouponAndDiscount c : ticket.getCouponAndDiscounts()) {
+				Coupon coupon = new Coupon();
+				coupon.setId(c.getCouponAndDiscountId());
+				coupon.setName(c.getName());
+				coupon.setQuantity(1); // always 1 even though their might be duplicates
+				coupon.setValue(c.getValue());
+				discounts.getCoupons().getCoupon().add(coupon);
+			}
+		}
+		transaction.setDiscounts(discounts);
+		
+		/* Tranaction Tip */
+		transaction.setTip(ticket.getGratuity().getAmount());
+		
+		receipt.setTransaction(transaction);
+		
+		return receipt;
 	}
 	
 	
 	
 	public static Receipt createReceipt(Properties p) {
 		Receipt receipt = new Receipt();
-		
 		String appId = p.getProperty("application.id");
 		Application application = new Application(appId);
-		
 		String posName = p.getProperty("pos.name");
 		String posVersion = p.getProperty("pos.version");
 		Pos pos = new Pos(posName, posVersion);

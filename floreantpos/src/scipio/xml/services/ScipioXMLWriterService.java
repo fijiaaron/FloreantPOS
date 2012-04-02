@@ -26,11 +26,18 @@ public class ScipioXMLWriterService {
 	
 	public void writeReceipt(Ticket ticket) throws ScipioException {
 		ReceiptBuilder builder = new ReceiptBuilder();
-		Receipt receipt = builder.createReceipt(ticket);
-		if (receipt == null) { throw new ScipioException(); }
-		
-		FileOutputStream out = getReceiptOutputStream(ticket);
-		writeXmlReceipt(receipt, out);
+		try {
+			Receipt receipt = builder.createReceipt(ticket);
+			if (receipt == null) { 
+				throw new ScipioException("receipt is null"); 
+			}
+			FileOutputStream out = getReceiptOutputStream(ticket);
+			writeXmlReceipt(receipt, out);
+			//TODO: remove STDOUT receipt
+			writeXmlReceipt(receipt, System.out);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public String writeReceiptXMLString(Receipt receipt) throws JAXBException, UnsupportedEncodingException {	
