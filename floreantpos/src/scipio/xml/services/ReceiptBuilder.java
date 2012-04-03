@@ -3,6 +3,7 @@ package scipio.xml.services;
 
 
 import com.floreantpos.model.*;
+import com.floreantpos.model.dao.GratuityDAO;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Properties;
@@ -13,6 +14,8 @@ import java.util.logging.Level;
 import org.apache.log4j.Logger;
 
 import com.floreantpos.model.dao.RestaurantDAO;
+import com.floreantpos.model.dao.TaxDAO;
+import com.floreantpos.print.PosPrinter;
 import java.util.List;
 import org.apache.log4j.BasicConfigurator;
 
@@ -37,12 +40,16 @@ import scipio.xml.model.Util;
 public class ReceiptBuilder {
 
 	public static String ScipioPropertiesFileName = "scipio.properties";
+	public static String TAX_LOCATION = "US";
 	
 	Properties scipio;
 	
 	private static Logger logger = Logger.getLogger(ReceiptBuilder.class);
 	
 	public ReceiptBuilder() {
+		BasicConfigurator.configure();
+		Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
+		
 		scipio = getScipioProperties();
 	}
 	
@@ -137,20 +144,37 @@ public class ReceiptBuilder {
 		
 		/* transaction items */
 		Items items = new Transaction.Items();
-		for (TicketItem i : ticket.getTicketItems()) {
-			Item item = new Item();
-			item.setItemId(i.getItemId());
-			item.setDescription(i.getCategoryName() + " " + i.getGroupName() + " " + i.getName() );
-			item.setQty(i.getItemCount());
-			item.setUnitPrice(i.getUnitPrice());
-			logger.info("i.getTotalAmount()" + i.getTotalAmount());
-			item.setTotal(i.getTotalAmount());
-			logger.info("calculated item total" + Util.multiply(i.getItemCount(), i.getUnitPrice())); //TODO: doesn't handle item discounts
-			item.setCoupon(null);  // coupons at item level don't apply
-			
-			items.getItem().add(item);	
+		List<TicketItem> ticketItems = ticket.getTicketItems();
+		if (ticketItems != null) {
+			for (TicketItem i : ticket.getTicketItems()) {
+				Item item = new Item();
+				item.setItemId(i.getItemId());
+				item.setDescription(i.getName());
+				item.setQty(i.getItemCount());
+				item.setUnitPrice(i.getUnitPrice());
+				double itemTotalAmount = i.getSubtotalAmountWithoutModifiers();
+				
+				// I'm not sure if these discount value are used correctly by items in FloreantPOS
+				if (i.getDiscountAmount() > 0) {
+					itemTotalAmount = itemTotalAmount - i.getDiscountAmount();
+				}
+				if (i.getDiscountRate() != 0) {
+					itemTotalAmount = itemTotalAmount - itemTotalAmount * i.getDiscountRate();
+				}
+				item.setTotal(itemTotalAmount);
+				
+				// FloreantPOS modifiers are not included
+				//addModifiers(item, i.getTicketItemModifierGroups());
+				
+				// FloreantPOS doesn't have coupons at item level
+				item.setCoupon(null);  
+
+				items.getItem().add(item);				
+			}
 		}
+		transaction.setItems(items);
 		
+		/* item totals */
 		int itemsQty = 0;
 		BigDecimal itemsSubtotal = new BigDecimal(0.00);
 		for (Item item : transaction.getItems().getItem()) {
@@ -159,10 +183,8 @@ public class ReceiptBuilder {
 		}
 		transaction.getItems().setQuantity(itemsQty);
 		transaction.getItems().setSubtotal(itemsSubtotal);
-		
-		transaction.setItems(items);
-	
-		/*transaction discounts */
+
+		/* discounts */
 		transaction.setDiscounts(null);
 		Discounts discounts = new Transaction.Discounts();
 		if (ticket.getCouponAndDiscounts() != null) {
@@ -177,10 +199,68 @@ public class ReceiptBuilder {
 		}
 		transaction.setDiscounts(discounts);
 		
-		/* Tranaction Tip */
-		transaction.setTip(ticket.getGratuity().getAmount());
+		/* discount totals */
+		int discountsQty = 0;
+		BigDecimal discountsSubtotal = new BigDecimal(0.00);
+		for (Coupon coupon : transaction.getDiscounts().getCoupons().getCoupon()) {
+			discountsQty += coupon.getQuantity();
+			discountsSubtotal = discountsSubtotal.add(Util.multiply(coupon.getValue(), coupon.getQuantity()));
+		}
+		transaction.getDiscounts().setQuantity(discountsQty);
+		transaction.getDiscounts().setValue(discountsSubtotal);
+		transaction.setDiscount(discountsSubtotal);
 		
+		/* sales tax */
+		transaction.setTax(ticket.getTaxAmount());
+		Salestax salestax = new Salestax();
+		salestax.setTaxableAmount(transaction.getSubtotal().subtract(transaction.getDiscount()));
+		salestax.setRate(getTaxRate(TAX_LOCATION));
+		salestax.setTotal(salestax.getTotal());
+		transaction.setSalestax(salestax);
+		
+		/* tip */
+		Gratuity gratuity = ticket.getGratuity();
+		if (gratuity != null) {
+			transaction.setTip(gratuity.getAmount());
+		}
+	
+		/* transaction total */
+		transaction.setAmountPaid(ticket.getPaidAmount());
+		transaction.setGrandTotal(ticket.getTotalAmount());
+		transaction.setStatus(transaction.getStatus());
 		receipt.setTransaction(transaction);
+		
+		/* payment */
+		Payment payment = new Payment();
+		payment.setAmountCharged(ticket.getTotalAmount());
+		payment.setMethod(ticket.getTransactionType());
+		
+		
+		/* credit card */
+		if (ticket.getTransactionType().equals(PosTransaction.TYPE_DEBIT_CARD) || 
+			ticket.getTransactionType().equals(PosTransaction.TYPE_CREDIT_CARD) )
+		{
+			Card cc = new Card();
+			
+			// these are not implemented in FloreantPOS
+			String cardholder = scipio.getProperty("creditcard.cardholder");
+			String expiration = scipio.getProperty("creditcard.expiration");
+			logger.info("cardholder: " + cardholder);
+			logger.info("expiration: " + expiration);
+
+			cc.setCardHolder(cardholder);
+			cc.setExpiration(expiration);
+			
+			cc.setNumber(ticket.getCardNumber());
+			cc.setType(ticket.getCardType());
+			payment.setCard(cc);
+			
+			if (gratuity != null) {
+				payment.setAmountCharged(ticket.getTotalAmount() + gratuity.getAmount());
+			}
+		}
+		
+		receipt.setPayment(payment);
 		
 		return receipt;
 	}
@@ -335,6 +415,56 @@ public class ReceiptBuilder {
 		
 		transaction.setStatus(transaction.getStatus());
 		return receipt;
+	}
+
+	private void addModifiers(Item item, List<TicketItemModifierGroup>  modifierGroups) {
+		int modifierCount = 0;
+		
+		if (modifierGroups != null) {
+			for (TicketItemModifierGroup modifierGroup : modifierGroups) {
+				List<TicketItemModifier> modifiers = modifierGroup.getTicketItemModifiers();
+				if (modifiers != null) {
+					for (TicketItemModifier modifier : modifiers) {
+						if (modifier.getTotalAmount() == 0) {
+							continue;
+						}
+						boolean extra = false;
+
+						if (modifier.getModifierType() == TicketItemModifier.EXTRA_MODIFIER) {
+							extra = true;
+						}
+
+						modifierCount = modifier.getItemCount();
+
+						if(extra) {
+							item.setTotal(Util.add(item.getTotal(), modifier.getExtraUnitPrice()));
+						}
+						else {
+							item.setUnitPrice(Util.add(item.getUnitPrice(), modifier.getUnitPrice()));
+						}
+
+						item.setTotal(Util.add(item.getTotal(), modifier.getTotalAmount()));
+
+					}
+				}
+			}
+		}
+	}
+
+	private double getTaxRate(String taxLocation) {
+		double taxRate = 0.0;
+		
+		// expects only one value for taxLocation in TAX table.
+		List<Tax> taxes = TaxDAO.getInstance().findAll();
+		if (taxes != null) {
+			for (Tax t : taxes) {
+				if (t.getName().equals(taxLocation)) {
+					taxRate = t.getRate();
+				}
+			}
+		}
+		
+		return taxRate;		
 	}
 	
 }

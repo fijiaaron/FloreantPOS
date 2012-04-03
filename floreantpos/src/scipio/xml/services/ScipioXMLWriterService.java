@@ -22,7 +22,7 @@ public class ScipioXMLWriterService {
 	public String ReceiptOutputDir = "xml_receipts";
 	public static final String UTF_8 = "UTF-8";
 
-	private static final Logger log = Logger.getLogger(ScipioXMLWriterService.class.getName());
+	private static final Logger logger = Logger.getLogger(ScipioXMLWriterService.class.getName());
 	
 	public void writeReceipt(Ticket ticket) throws ScipioException {
 		ReceiptBuilder builder = new ReceiptBuilder();
@@ -48,12 +48,8 @@ public class ScipioXMLWriterService {
 		
 		try {
 			xmlString = stream.toString(UTF_8);
-		} catch (UnsupportedEncodingException e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-			
-			log.warning(e.getMessage());
-			log.info(e.getStackTrace().toString());
+		} catch (UnsupportedEncodingException ex) {
+			logger.log(Level.SEVERE, null, ex);
 			xmlString = stream.toString();
 		}
 		
@@ -68,11 +64,8 @@ public class ScipioXMLWriterService {
 			Marshaller marshaller = context.createMarshaller();
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 			marshaller.marshal(receipt, out);
-		} catch (JAXBException e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-			log.severe(e.getErrorCode());
-			log.info(e.getStackTrace().toString());
+		} catch (JAXBException ex) {
+			logger.log(Level.SEVERE, null, ex);
 		}
 	}
 	
@@ -87,13 +80,8 @@ public class ScipioXMLWriterService {
 				
 		try {
 			applicationDir = new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile();
-			System.out.println(applicationDir.getCanonicalPath());
 		} catch (URISyntaxException ex) {
-			System.out.println(ex.getMessage());
-			ex.printStackTrace();
-		} catch (IOException ex) {
-			System.out.println(ex.getMessage());
-			ex.printStackTrace();
+			logger.log(Level.SEVERE, null, ex);
 		}
 		
 		return applicationDir;
@@ -101,8 +89,7 @@ public class ScipioXMLWriterService {
 	
 	public File getXmlReceiptsDir() throws IOException {
 		File xmlReceiptsDir = new File(getApplicationDir().getCanonicalPath() + "/" + ReceiptOutputDir);
-		System.out.println("xml_receiptsDir: " + xmlReceiptsDir.getCanonicalPath());
-
+		
 		if (! xmlReceiptsDir.exists()) {
 			xmlReceiptsDir.mkdir();
 		}
@@ -117,7 +104,6 @@ public class ScipioXMLWriterService {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmssSSS");
 		String closeDate = dateFormat.format(ticket.getClosingDate());
 		String receiptFileName = "receipt_" + closeDate + ".xml";
-		System.out.println("receiptFileName: " + receiptFileName);
 		
 		return receiptFileName;
 	}
@@ -127,13 +113,11 @@ public class ScipioXMLWriterService {
 		
 		try {
 			File file = new File(getXmlReceiptsDir().getCanonicalPath() + "/" + getReceiptFileName(ticket));
-			System.out.println(file.getAbsoluteFile());
+			logger.info("xml receipt: " + file.getAbsoluteFile());
 			//file.createNewFile();
 			out = new FileOutputStream(file);
 		} catch (IOException ex) {
-			Logger.getLogger(ScipioXMLWriterService.class.getName()).log(Level.SEVERE, null, ex);
-			System.out.println(ex.getMessage());
-			ex.printStackTrace();
+			logger.log(Level.SEVERE, null, ex);
 		}
 		
 		return out;

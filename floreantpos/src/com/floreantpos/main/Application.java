@@ -38,10 +38,11 @@ import com.floreantpos.ui.views.order.RootView;
 import com.floreantpos.util.TicketActiveDateSetterTask;
 import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
 import com.jgoodies.looks.plastic.theme.ExperienceBlue;
+import org.apache.log4j.BasicConfigurator;
 
 public class Application {
 	private static Log logger = LogFactory.getLog(Application.class);
-
+	
 	private Timer autoDrawerPullTimer;
 
 	private Terminal terminal;
