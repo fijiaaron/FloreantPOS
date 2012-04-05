@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.floreantpos.model">
+  <class lazy="false" name="com.floreantpos.model.ScipioInfo" table="SCIPIO_INFO">
+    <id column="ID" name="id" type="java.lang.Integer">
+      <generator class="identity"/>
+    </id>
+    <property column="PEI" name="PEI" type="java.lang.Integer"/>
+    <property column="TEI" name="TEI" type="java.lang.Integer"/>
+    <property column="PIN" name="PIN" type="java.lang.Integer"/>
+    <!-- Associations -->
+	<many-to-one class="com.floreantpos.model.Ticket" name="ticket" not-null="true">
+      <column name="TICKET_ID"/>
+    </many-to-one>
+  </class>
+</hibernate-mapping>
