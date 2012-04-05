@@ -35,7 +35,7 @@ import org.apache.log4j.Logger;
  *             &lt;complexContent>
  *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *                 &lt;sequence>
- *                   &lt;element name="appId" type="{http://www.w3.org/2001/XMLSchema}unsignedInt"/>
+ *                   &lt;element name="appId" type="http://www.w3.org/2001/XMLSchema}string"/>
  *                 &lt;/sequence>
  *               &lt;/restriction>
  *             &lt;/complexContent>
@@ -58,7 +58,7 @@ import org.apache.log4j.Logger;
  *             &lt;complexContent>
  *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *                 &lt;sequence>
- *                   &lt;element name="smi" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *                   &lt;element name="smi" type="{http://www.w3.org/2001/XMLSchema}unsignedInt"/>
  *                   &lt;element name="username" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *                   &lt;element name="address">
  *                     &lt;complexType>
@@ -477,7 +477,7 @@ public class Receipt {
      *   &lt;complexContent>
      *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
      *       &lt;sequence>
-     *         &lt;element name="appId" type="{http://www.w3.org/2001/XMLSchema}unsignedInt"/>
+     *         &lt;element name="appId" type="{http://www.w3.org/2001/XMLSchema}string"/>
      *       &lt;/sequence>
      *     &lt;/restriction>
      *   &lt;/complexContent>
@@ -493,20 +493,18 @@ public class Receipt {
     public static class Application {
 
     	@XmlSchemaType(name = "unsignedInt")
-        protected long appId;
+        protected String appId;
 
     	// Constructors
     	public Application() {}
     	
-    	public Application(int appId) { setAppId(appId); }
-    	public Application(long appId) { setAppId(appId); }
     	public Application(String appId) { setAppId(appId); }
     	
         /**
          * Gets the value of the appId property.
          * 
          */
-        public long getAppId() {
+        public String getAppId() {
             return appId;
         }
 
@@ -514,15 +512,8 @@ public class Receipt {
          * Sets the value of the appId property.
          * 
          */
-        public void setAppId(long value) {
-            this.appId = value;
-        }
 		public void setAppId(String value) {
-			try {
-				this.appId = Long.valueOf(value);
-			} catch (NumberFormatException e) { 
-				logger.warn(("invalid appId: " + value));
-			}
+			this.appId = value;
 		}
 
     }
@@ -660,7 +651,7 @@ public class Receipt {
      *   &lt;complexContent>
      *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
      *       &lt;sequence>
-     *         &lt;element name="smi" type="{http://www.w3.org/2001/XMLSchema}string"/>
+     *         &lt;element name="smi" type="{http://www.w3.org/2001/XMLSchema}unsignedInt"/>
      *         &lt;element name="username" type="{http://www.w3.org/2001/XMLSchema}string"/>
      *         &lt;element name="address">
      *           &lt;complexType>
@@ -700,7 +691,7 @@ public class Receipt {
     public static class Merchant {
 
         @XmlElement(required = true)
-        protected String smi;
+        protected int smi;
         @XmlElement(required = true)
         protected String username;
         @XmlElement(required = true)
@@ -725,10 +716,10 @@ public class Receipt {
          * 
          * @return
          *     possible object is
-         *     {@link String }
+         *     {@link int }
          *     
          */
-        public String getSmi() {
+        public int getSmi() {
             return smi;
         }
 
@@ -740,10 +731,24 @@ public class Receipt {
          *     {@link String }
          *     
          */
-        public void setSmi(String value) {
+        public void setSmi(int value) {
             this.smi = value;
         }
-
+		public void setSmi(String value) {
+			try {
+				if (value.length() != 6) {
+					throw new IllegalArgumentException("SMI must be 6 digits");
+				}
+				setSmi(Integer.valueOf(value));
+			} catch (NumberFormatException ex) {
+				logger.warn(ex.getMessage());
+				logger.info(ex.getStackTrace().toString());
+			} catch (IllegalArgumentException ex) {
+				logger.warn(ex.getMessage());
+				logger.info(ex.getStackTrace().toString());
+			}
+        }
+ 
         /**
          * Gets the value of the username property.
          * 
