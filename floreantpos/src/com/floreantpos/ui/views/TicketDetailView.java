@@ -255,10 +255,8 @@ public class TicketDetailView extends JPanel implements ActionListener {
 
 	//-AE-
 	private void doScipio() {
-		System.out.println("in TicketDetailView.doScipio()");
-
 		for (Ticket ticket : tickets) {
-			System.out.println("ticket: " + ticket.getTitle() + " " + ticket.getId());
+			// only want the first ticket
 		}
 
 		try {
@@ -271,15 +269,8 @@ public class TicketDetailView extends JPanel implements ActionListener {
 			dialog.open();
 			
 			if ( ! dialog.isCanceled()) {
-				System.out.println("dialog was not cancelled");
 				scipioInfo = dialog.getScipioInfo();
-				System.out.println("Scipio Info:");
-				System.out.println("TEI: " + scipioInfo.getTEI());
-				System.out.println("PEI: " + scipioInfo.getPEI());
-				System.out.println("PIN: " + scipioInfo.getPIN());
-				
 				ticket = scipioInfo.getTicket();
-				System.out.println("Ticket ID: " + ticket.getId());
 				ticket.setScipioInfo(scipioInfo);
 	
 				updateModel();
