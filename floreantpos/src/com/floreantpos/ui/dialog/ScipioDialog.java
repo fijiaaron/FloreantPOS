@@ -10,6 +10,8 @@ import com.floreantpos.main.Application;
 import com.floreantpos.model.ScipioInfo;
 import com.floreantpos.model.Ticket;
 import com.floreantpos.model.dao.ScipioInfoDAO;
+import com.floreantpos.model.dao.TicketDAO;
+import sun.util.logging.resources.logging;
 
 /**
  *
@@ -18,7 +20,7 @@ import com.floreantpos.model.dao.ScipioInfoDAO;
 public class ScipioDialog extends POSDialog {
 
 	private Ticket ticket;
-	private ScipioInfo scipio;
+	private ScipioInfo scipioInfo;
 			
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.floreantpos.swing.PosButton btnCancel;
@@ -103,7 +105,6 @@ public class ScipioDialog extends POSDialog {
             }
         });
 
-        txtTEI.setText("12345");
         txtTEI.setMaximumSize(new java.awt.Dimension(250, 30));
         txtTEI.setMinimumSize(new java.awt.Dimension(24, 20));
 
@@ -112,7 +113,6 @@ public class ScipioDialog extends POSDialog {
         lblPIN.setMinimumSize(new java.awt.Dimension(16, 16));
         lblPIN.setPreferredSize(new java.awt.Dimension(32, 16));
 
-        txtPIN.setText("1234");
         txtPIN.setMaximumSize(new java.awt.Dimension(250, 30));
         txtPIN.setMinimumSize(new java.awt.Dimension(24, 20));
         txtPIN.addActionListener(new java.awt.event.ActionListener() {
@@ -126,7 +126,6 @@ public class ScipioDialog extends POSDialog {
         lblPEI.setMinimumSize(new java.awt.Dimension(16, 16));
         lblPEI.setPreferredSize(new java.awt.Dimension(32, 16));
 
-        txtPEI.setText("123456");
         txtPEI.setMaximumSize(new java.awt.Dimension(250, 30));
         txtPEI.setMinimumSize(new java.awt.Dimension(24, 20));
         txtPEI.addActionListener(new java.awt.event.ActionListener() {
@@ -193,21 +192,13 @@ public class ScipioDialog extends POSDialog {
     }// </editor-fold>//GEN-END:initComponents
 
 	public void initData() throws Exception {
-//		ScipioInfoDAO dao = new ScipioInfoDAO();
-//		dao.createNewSession();
-//		
-//		try {
-//			System.out.println("looking for scipioInfo for ticket");
-//			scipio = dao.getScipioInfo(ticket);
-//		} 
-//		catch (Exception e) {
-//			System.out.println("scipioInfo not found for ticket");
-//			scipio = new ScipioInfo();
-//			//e.printStackTrace();
-//		}
-//
-//		System.out.println(scipio);
+		scipioInfo = ticket.getScipioInfo();
 		
+		if (scipioInfo != null) { 
+			txtPEI.setText(String.valueOf(scipioInfo.getPEI()));
+			txtPIN.setText(String.valueOf(scipioInfo.getPIN()));
+			txtTEI.setText(String.valueOf(scipioInfo.getTEI()));
+		}
 	}
 
 	// temporarily added to workaround Netbeans dialog code generation
@@ -217,23 +208,17 @@ public class ScipioDialog extends POSDialog {
 	}
 	private void doOk(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOkdoOk
 		try {
-			if (scipio == null) {
-				scipio = new ScipioInfo();
+			if (scipioInfo == null) {
+				scipioInfo = new ScipioInfo();
 			}
 			
 			try {
-				scipio.setTEI(txtTEI.getText());
-				scipio.setPEI(txtPEI.getText());
-				scipio.setPIN(txtPIN.getText());
-				scipio.setTicket(ticket);
-				
-//				ScipioInfoDAO dao = ScipioInfoDAO.getInstance();
-//				dao.createNewSession();
-//				dao.save(scipio);
+				scipioInfo.setTEI(txtTEI.getText());
+				scipioInfo.setPEI(txtPEI.getText());
+				scipioInfo.setPIN(txtPIN.getText());
+				scipioInfo.setTicket(ticket);
 			}
 			catch (Exception e) {
-				e.printStackTrace();
-				
 				throw new PosException("Scipio info is not valid.\n" + e.getMessage());	
 			}
 				
@@ -250,12 +235,8 @@ public class ScipioDialog extends POSDialog {
 		doCancel(evt);
 	}
 	private void doCancel(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCanceldoCancel
-		System.out.println("in ScipioDialog.doCancel()");
-		
-//				dao.createNewSession();
-//				dao.save(scipio);
 		setCanceled(true);
-//		dispose();
+		dispose();
 	}//GEN-LAST:event_btnCanceldoCancel
 
 	private void txtPINActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPINActionPerformed
@@ -276,6 +257,6 @@ public class ScipioDialog extends POSDialog {
 	}
 	
 	public ScipioInfo getScipioInfo() {
-		return scipio;
+		return scipioInfo;
 	}
 }

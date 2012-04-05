@@ -133,7 +133,6 @@
     </Component>
     <Component class="javax.swing.JFormattedTextField" name="txtTEI">
       <Properties>
-        <Property name="text" type="java.lang.String" value="12345"/>
         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[250, 30]"/>
         </Property>
@@ -158,7 +157,6 @@
     </Component>
     <Component class="javax.swing.JFormattedTextField" name="txtPIN">
       <Properties>
-        <Property name="text" type="java.lang.String" value="1234"/>
         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[250, 30]"/>
         </Property>
@@ -186,7 +184,6 @@
     </Component>
     <Component class="javax.swing.JFormattedTextField" name="txtPEI">
       <Properties>
-        <Property name="text" type="java.lang.String" value="123456"/>
         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[250, 30]"/>
         </Property>
