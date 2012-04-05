@@ -94,11 +94,6 @@ public class ReceiptBuilder {
 		Restaurant restaurant = RestaurantDAO.getInstance().get(Integer.valueOf(1));
 		User user = ticket.getOwner();
 		
-		/* scipioInfo */
-		ScipioInfo scipioInfo = ticket.getScipioInfo();
-		logger.info("PEI: " + scipioInfo.getPEI());
-		logger.info("PIN: " + scipioInfo.getPIN());
-		logger.info("TEI: " + scipioInfo.getTEI());
 		
 		/* application */
 		String appId = scipio.getProperty("application.id");
@@ -106,9 +101,14 @@ public class ReceiptBuilder {
 		receipt.setApplication(application);
 		
 		/* pos */
-		String posName = scipio.getProperty("pos.name");
-		String posVersion = scipio.getProperty("pos.version");
+		//String posName = scipio.getProperty("pos.name");
+		//String posVersion = scipio.getProperty("pos.version");
+		
+		String posName = com.floreantpos.main.Application.APPNAME;
+		String posVersion = com.floreantpos.main.Application.VERSION;
+		
 		Pos pos = new Pos(posName, posVersion);
+		
 		receipt.setPos(pos);
 
 		/* merchant */
@@ -124,6 +124,9 @@ public class ReceiptBuilder {
 		
 		/* terminal */
 		receipt.setTerminal(new Terminal(ticket.getTerminal().getId(), ticket.getTerminal().getName()));
+		
+		/* scipioInfo */
+		ScipioInfo scipioInfo = ticket.getScipioInfo();
 		
 		/* consumer */
 		Consumer consumer = new Consumer(scipioInfo.getPEI(), scipioInfo.getPIN(), scipioInfo.getTEI());
@@ -327,8 +330,6 @@ public class ReceiptBuilder {
 				if (couponId != null) {
 					item.setCoupon(new scipio.xml.model.Receipt.Transaction.Items.Item.Coupon(couponId));
 				}
-				
-				//System.out.println("adding item #" + item.getInventoryId() + ": " + item.getQty() + "x " + item.getDescription() + " @ " + item.getUnitPrice() + " each");
 				
 				transaction.getItems().getItem().add(item);
 			}
