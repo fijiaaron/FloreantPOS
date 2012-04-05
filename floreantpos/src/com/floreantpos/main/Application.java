@@ -38,7 +38,7 @@ import com.floreantpos.ui.views.order.RootView;
 import com.floreantpos.util.TicketActiveDateSetterTask;
 import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
 import com.jgoodies.looks.plastic.theme.ExperienceBlue;
-import org.apache.log4j.BasicConfigurator;
+
 
 public class Application {
 	private static Log logger = LogFactory.getLog(Application.class);
@@ -60,6 +60,7 @@ public class Application {
 	private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM, yyyy");
 	private static ImageIcon applicationIcon;
 
+	public final static String APPNAME = "Floreant POS";
 	public final static String VERSION = ApplicationConfig.getConfiguration().getString("floreantpos.version");
 
 	private Application() {
@@ -286,7 +287,7 @@ public class Application {
 	}
 
 	public static String getTitle() {
-		return "Floreant POS - Version " + VERSION;
+		return APPNAME + " - Version " + VERSION;
 	}
 
 	public static ImageIcon getApplicationIcon() {
