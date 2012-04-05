@@ -64,7 +64,7 @@
 		<mapping resource="com/floreantpos/model/PrinterConfiguration.hbm.xml" />
 		<mapping resource="com/floreantpos/model/UserPermission.hbm.xml" />
 		<mapping resource="com/floreantpos/model/UserType.hbm.xml" />
-		<!-- //-AE-  -->
 		<mapping resource="com/floreantpos/model/ScipioInfo.hbm.xml" />
+		<mapping resource="com/floreantpos/model/Scipio.hbm.xml" />
 	</session-factory>
 </hibernate-configuration>
