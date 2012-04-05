@@ -256,7 +256,7 @@ public class TicketDetailView extends JPanel implements ActionListener {
 	//-AE-
 	private void doScipio() {
 		for (Ticket ticket : tickets) {
-			// only want the first ticket
+			// only want first ticket
 		}
 
 		try {
@@ -270,9 +270,10 @@ public class TicketDetailView extends JPanel implements ActionListener {
 			
 			if ( ! dialog.isCanceled()) {
 				scipioInfo = dialog.getScipioInfo();
+				
+				
 				ticket = scipioInfo.getTicket();
 				ticket.setScipioInfo(scipioInfo);
-	
 				updateModel();
 				TicketDAO.getInstance().saveOrUpdate(ticket);
 				ScipioInfoDAO.getInstance().saveOrUpdate(scipioInfo);				

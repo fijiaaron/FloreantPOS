@@ -9,10 +9,6 @@ import com.floreantpos.PosException;
 import com.floreantpos.main.Application;
 import com.floreantpos.model.ScipioInfo;
 import com.floreantpos.model.Ticket;
-import com.floreantpos.model.dao.ScipioInfoDAO;
-import com.floreantpos.model.dao.TicketDAO;
-import sun.util.logging.resources.logging;
-
 /**
  *
  * @author Aaron Evans <aarone@one-shore.com>

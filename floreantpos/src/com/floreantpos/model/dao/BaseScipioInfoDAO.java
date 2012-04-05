@@ -1,17 +1,11 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+//-AE-
 package com.floreantpos.model.dao;
 
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 
-/**
- *
- * @author Aaron
- */
+
 public abstract class BaseScipioInfoDAO extends com.floreantpos.model.dao._RootDAO {
 	
 	public static ScipioInfoDAO instance;
