@@ -78,5 +78,8 @@
     <many-to-one class="com.floreantpos.model.Terminal" lazy="false" name="terminal">
       <column name="TERMINAL_ID"/>
     </many-to-one>
+	<many-to-one cascade="all" class="com.floreantpos.model.ScipioInfo" lazy="false" name="scipioInfo">
+      <column name="SCIPIO_INFO_ID"/>
+    </many-to-one>
   </class>
 </hibernate-mapping>

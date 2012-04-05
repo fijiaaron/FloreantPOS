@@ -47,6 +47,11 @@ public class JReportPrintService {
 		map.put("grandSubtotal", Application.formatNumber(ticket.getSubtotalAmount()));
 		map.put("grandTotal", Application.formatNumber(ticket.getTotalAmount()));
 		map.put("taxAmount", Application.formatNumber(ticket.getTaxAmount()));
+		
+		//-AE-
+		//System.out.println("discount: " + Application.formatNumber(ticket.getDiscountAmount()));
+		//map.put("discount", Application.formatNumber(ticket.getDiscountAmount()));
+		
 		if (ticket.getGratuity() != null) {
 			map.put("tipAmount", Application.formatNumber(ticket.getGratuity().getAmount()));
 		}
@@ -55,8 +60,13 @@ public class JReportPrintService {
 
 		try {
 			//ticketReportStream = JReportPrintService.class.getResourceAsStream("/com/floreantpos/jreports/TicketReceiptReport.jrxml");
+			
 			ticketReportStream = JReportPrintService.class.getResourceAsStream("/com/floreantpos/jreports/TicketReceiptReport.jasper");
-
+			
+			//-AE-
+			//ticketReportStream = JReportPrintService.class.getResourceAsStream("/com/floreantpos/jreports/TicketReceiptReport_Scipio.jasper");
+			//System.out.println("ticketReportStream: " + ticketReportStream);
+			
 			//JasperReport ticketReport = JasperCompileManager.compileReport(ticketReportStream);
 			JasperReport ticketReport = (JasperReport) JRLoader.loadObject(ticketReportStream);
 

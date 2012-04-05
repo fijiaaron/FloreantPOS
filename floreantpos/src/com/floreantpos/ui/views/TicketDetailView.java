@@ -24,18 +24,22 @@ import javax.swing.JTextField;
 import net.miginfocom.swing.MigLayout;
 
 import com.floreantpos.main.Application;
-import com.floreantpos.model.ScipioInfo;
 import com.floreantpos.model.Ticket;
 import com.floreantpos.model.TicketCouponAndDiscount;
-import com.floreantpos.model.dao.ScipioInfoDAO;
 import com.floreantpos.model.dao.TicketDAO;
 import com.floreantpos.swing.POSToggleButton;
 import com.floreantpos.swing.PosButton;
 import com.floreantpos.ui.dialog.CouponAndDiscountDialog;
 import com.floreantpos.ui.dialog.DiscountListDialog;
 import com.floreantpos.ui.dialog.POSMessageDialog;
-import com.floreantpos.ui.dialog.ScipioDialog;
 
+//-AE-
+import com.floreantpos.ui.dialog.ScipioDialog;
+import com.floreantpos.model.ScipioInfo;
+import com.floreantpos.model.dao.ScipioInfoDAO;
+
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 /**
  *
  * @author  MShahriar
@@ -74,8 +78,9 @@ public class TicketDetailView extends JPanel implements ActionListener {
 	private JPanel buttonPanel;
 
 	private List<Ticket> tickets;
+	
 	//-AE-
-	private ScipioInfo scipio;
+	private ScipioInfo scipioInfo;
 		
 	/** Creates new form TicketInfoView */
 	public TicketDetailView() {
@@ -267,21 +272,21 @@ public class TicketDetailView extends JPanel implements ActionListener {
 			
 			if ( ! dialog.isCanceled()) {
 				System.out.println("dialog was not cancelled");
-				scipio = dialog.getScipioInfo();
+				scipioInfo = dialog.getScipioInfo();
 				System.out.println("Scipio Info:");
-				System.out.println("TEI: " + scipio.getTEI());
-				System.out.println("PEI: " + scipio.getPEI());
-				System.out.println("PIN: " + scipio.getPIN());
+				System.out.println("TEI: " + scipioInfo.getTEI());
+				System.out.println("PEI: " + scipioInfo.getPEI());
+				System.out.println("PIN: " + scipioInfo.getPIN());
 				
-				ticket = scipio.getTicket();
+				ticket = scipioInfo.getTicket();
 				System.out.println("Ticket ID: " + ticket.getId());
-				
-//				ScipioInfoDAO.getInstance().saveOrUpdate(scipio);
-				
+				ticket.setScipioInfo(scipioInfo);
+	
 				updateModel();
 				TicketDAO.getInstance().saveOrUpdate(ticket);
+				ScipioInfoDAO.getInstance().saveOrUpdate(scipioInfo);				
 				updateView();
-
+				
 				if(settleTicketView != null) {
 					settleTicketView.updatePaymentView();
 				}

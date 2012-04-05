@@ -49,7 +49,9 @@ public abstract class BaseTicket  implements Comparable, Serializable {
 	public static String PROP_VOIDED = "voided";
 	public static String PROP_TOTAL_AMOUNT = "totalAmount";
 	public static String PROP_PAID_AMOUNT = "paidAmount";
-
+	
+	//-AE-
+	public static String PROP_SCIPIO_INFO = "scipioInfo";
 
 	// constructors
 	public BaseTicket () {
@@ -108,7 +110,10 @@ public abstract class BaseTicket  implements Comparable, Serializable {
 	private com.floreantpos.model.Gratuity gratuity;
 	private com.floreantpos.model.User voidedBy;
 	private com.floreantpos.model.Terminal terminal;
-
+	
+	//-AE-
+	private com.floreantpos.model.ScipioInfo scipioInfo;
+	
 	// collections
 	private java.util.List<com.floreantpos.model.TicketItem> ticketItems;
 	private java.util.List<com.floreantpos.model.TicketCouponAndDiscount> couponAndDiscounts;
@@ -628,7 +633,7 @@ public abstract class BaseTicket  implements Comparable, Serializable {
 	public void setGratuity (com.floreantpos.model.Gratuity gratuity) {
 		this.gratuity = gratuity;
 	}
-
+	
 
 
 	/**
@@ -725,8 +730,24 @@ public abstract class BaseTicket  implements Comparable, Serializable {
 	}
 
 
+	
+	//-AE-
+		/**
+	 * Return the value associated with the column: SCIPIO_INFO_ID
+	 */
+	public com.floreantpos.model.ScipioInfo getScipioInfo () {
+			return scipioInfo;
+	}
 
+	/**
+	 * Set the value related to the column: SCIPIO_INFO_ID
+	 * @param scipioInfo the SCIPIO_INFO_ID value
+	 */
+	public void setScipioInfo (com.floreantpos.model.ScipioInfo scipioInfo) {
+		this.scipioInfo = scipioInfo;
+	}
 
+	
 
 	public boolean equals (Object obj) {
 		if (null == obj) return false;

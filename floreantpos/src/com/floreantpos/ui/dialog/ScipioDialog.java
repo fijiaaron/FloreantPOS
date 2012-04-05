@@ -43,9 +43,6 @@ public class ScipioDialog extends POSDialog {
 	 */
 	public ScipioDialog() {
 		super(Application.getPosWindow(), true, false);
-		
-		System.out.println("in ScipioDialog constructor");
-		
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 	
         try {
@@ -196,9 +193,6 @@ public class ScipioDialog extends POSDialog {
     }// </editor-fold>//GEN-END:initComponents
 
 	public void initData() throws Exception {
-		System.out.println("...in ScipioDialog.initData()");
-		System.out.println("ticket: " + ticket.getId());
-		
 //		ScipioInfoDAO dao = new ScipioInfoDAO();
 //		dao.createNewSession();
 //		
@@ -223,10 +217,7 @@ public class ScipioDialog extends POSDialog {
 	}
 	private void doOk(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOkdoOk
 		try {
-			System.out.println("...in ScipioDialog.doOk()");
-			
 			if (scipio == null) {
-				System.out.println("scipio is null... creating new ScipioInfo object");
 				scipio = new ScipioInfo();
 			}
 			
@@ -259,9 +250,12 @@ public class ScipioDialog extends POSDialog {
 		doCancel(evt);
 	}
 	private void doCancel(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCanceldoCancel
-		System.out.println("... inScipioDialog.doCancel()");
+		System.out.println("in ScipioDialog.doCancel()");
+		
+//				dao.createNewSession();
+//				dao.save(scipio);
 		setCanceled(true);
-		dispose();
+//		dispose();
 	}//GEN-LAST:event_btnCanceldoCancel
 
 	private void txtPINActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPINActionPerformed

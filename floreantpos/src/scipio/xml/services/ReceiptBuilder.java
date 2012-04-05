@@ -93,16 +93,12 @@ public class ReceiptBuilder {
 		Receipt receipt = new Receipt();
 		Restaurant restaurant = RestaurantDAO.getInstance().get(Integer.valueOf(1));
 		User user = ticket.getOwner();
-		ScipioInfo scipioInfo = new ScipioInfo();
 		
-		//TODO: get ScipioInfo from database
-		int pin = 1234;
-		int tei = 12345;
-		int pei = 123456;
-		
-		scipioInfo.setPEI(pei);
-		scipioInfo.setPIN(tei);
-		scipioInfo.setTEI(pin);
+		/* scipioInfo */
+		ScipioInfo scipioInfo = ticket.getScipioInfo();
+		logger.info("PEI: " + scipioInfo.getPEI());
+		logger.info("PIN: " + scipioInfo.getPIN());
+		logger.info("TEI: " + scipioInfo.getTEI());
 		
 		/* application */
 		String appId = scipio.getProperty("application.id");
