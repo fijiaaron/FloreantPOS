@@ -47,7 +47,7 @@ public class ReceiptBuilder {
 	private static Logger logger = Logger.getLogger(ReceiptBuilder.class);
 	
 	public ReceiptBuilder() {
-		BasicConfigurator.configure();
+		//BasicConfigurator.configure();
 		Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
 		
 		scipio = getScipioProperties();
