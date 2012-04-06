@@ -32,8 +32,7 @@ public class ScipioXMLWriterService {
 			}
 			FileOutputStream out = getReceiptOutputStream(ticket);
 			writeXmlReceipt(receipt, out);
-			//TODO: remove STDOUT receipt
-			writeXmlReceipt(receipt, System.out);
+			//writeXmlReceipt(receipt, System.out);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
