@@ -40,6 +40,7 @@ import com.floreantpos.model.dao.ScipioInfoDAO;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+
 /**
  *
  * @author  MShahriar
@@ -50,7 +51,7 @@ public class TicketDetailView extends JPanel implements ActionListener {
 
 	private com.floreantpos.swing.PosButton btnApplyCoupon;
 	//-AE-
-    private com.floreantpos.swing.PosButton btnScipio;
+	private com.floreantpos.swing.PosButton btnScipio;
         
 	private com.floreantpos.swing.POSToggleButton btnTaxExempt;
 	private com.floreantpos.swing.PosButton btnViewDiscounts;
