@@ -12,7 +12,7 @@ Get the source:
 		git checkout scipio
 
 
-	or download the zipfile
+	or download the zipfile:
 
 
 	1. Go to https://github.com/fijiaaron/FloreantPOS/tree/scipio
@@ -40,7 +40,7 @@ Build the project:
 		cd floreantpos\resources
 		update_posdb.bat
 
-		or using ij
+		or using ij:
 
 		java -jar resources/database/derbyrun.jar ij
 		CONNECT 'jdbc:derby://localhost:1527/posdb;user=app;password=sa';
@@ -48,13 +48,13 @@ Build the project:
 
 Run FloreantPOS:
 
-	8. Go to the target directory
-		cd target\floreantpos-1.2-SNAPSHOT-bin\floreantpos-1.2-SNAPSHOT\
-
-	9. Copy scipio.properties to target directory
+	8. Copy scipio.properties to target directory
 		cp resources\scipio.properties  target\floreantpos-1.2-SNAPSHOT-bin\floreantpos-1.2-SNAPSHOT\
-		
+
+	9. Go to the target directory
+		cd target\floreantpos-1.2-SNAPSHOT-bin\floreantpos-1.2-SNAPSHOT\
+	
 	10. Execute floreantpos.bat
 		floreantpos.bat
 
-	
+
