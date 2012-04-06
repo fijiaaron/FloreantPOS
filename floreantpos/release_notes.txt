@@ -1,0 +1,63 @@
+Steps to build Floreant POS with Scipio modification and XML Receipts
+
+Get the source:
+
+	1. Checkout the source code from github:
+		clone https://github.com/fijiaaron/FloreantPOS.git
+
+	2. Go to the checkout directory
+		cd FloreantPOS
+
+	3. Use the 'scipio' branch
+		git checkout scipio
+
+
+	or download the zipfile
+
+
+	1. Go to https://github.com/fijiaaron/FloreantPOS/tree/scipio
+		
+	2. Click the "ZIP" button
+		
+	3. Save & Extract zipfile
+		
+
+Build the project:
+
+	4. Go to the floreantpos sub-directory
+		cd floreantpos
+
+	5. Build with maven
+		mvn clean install
+
+	6. Unzip & start the database
+		cd target\floreantpos-1.2-SNAPSHOT-bin\floreantpos-1.2-SNAPSHOT\sample_db
+		unzip posdb.zip
+		start_server.bat
+		
+	7. Execute db update scripts
+		cd ..\..\..\..\resources
+		update_posdb.bat
+
+		or using ij
+
+		java -jar resources/database/derbyrun.jar ij
+		CONNECT 'jdbc:derby://localhost:1527/posdb;user=app;password=sa';
+		RUN 'resources/database/scipio-info.ddl.sql';
+
+		or directly from the command line
+
+		java -Dij.connection.posdb=jdbc:derby://localhost:1527/posdb;username=app;password=sa -jar resources/database/lib/derbyrun.jar ij  \dev\scipio\FloreantPOS\floreantpos\resources\scipio-info.ddl.sql
+
+Run FloreantPOS:
+
+	8. Go to the target directory
+		cd target\floreantpos-1.2-SNAPSHOT-bin\floreantpos-1.2-SNAPSHOT\
+
+	9. Configure scipio.properties
+		cp resources\scipio.properties target\floreantpos-1.2-SNAPSHOT-bin\floreantpos-1.2-SNAPSHOT
+
+	10. Execute floreantpos.bat
+		floreantpos.bat
+
+
