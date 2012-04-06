@@ -9,14 +9,15 @@ import com.floreantpos.PosException;
 import com.floreantpos.main.Application;
 import com.floreantpos.model.ScipioInfo;
 import com.floreantpos.model.Ticket;
+
 /**
  *
  * @author Aaron Evans <aarone@one-shore.com>
  */
 public class ScipioDialog extends POSDialog {
 
-	private Ticket ticket;
-	private ScipioInfo scipioInfo;
+    private Ticket ticket;
+    private ScipioInfo scipioInfo;
 			
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.floreantpos.swing.PosButton btnCancel;
@@ -31,9 +32,8 @@ public class ScipioDialog extends POSDialog {
     // End of variables declaration//GEN-END:variables
 	
     MaskFormatter teiFormatter = null;
-	MaskFormatter pinFormatter = null;
-	MaskFormatter peiFormatter = null;
-	
+    MaskFormatter pinFormatter = null;
+    MaskFormatter peiFormatter = null;
 	
 	
 	/**
@@ -44,9 +44,9 @@ public class ScipioDialog extends POSDialog {
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 	
         try {
-			teiFormatter = new MaskFormatter("#####");
-			pinFormatter = new MaskFormatter("####");
-			peiFormatter = new MaskFormatter("######");
+		teiFormatter = new MaskFormatter("#####");
+		pinFormatter = new MaskFormatter("####");
+		peiFormatter = new MaskFormatter("######");
 			
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -54,7 +54,7 @@ public class ScipioDialog extends POSDialog {
         
 		initComponents();
 		setResizable(false);
-        pack();
+		pack();
 	}
 
 	/**
