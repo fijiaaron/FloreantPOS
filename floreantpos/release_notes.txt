@@ -36,7 +36,8 @@ Build the project:
 		start_server.bat
 		
 	7. Execute db update scripts
-		cd ..\..\..\..\resources
+		open another windows
+		cd floreantpos\resources
 		update_posdb.bat
 
 		or using ij
@@ -45,19 +46,15 @@ Build the project:
 		CONNECT 'jdbc:derby://localhost:1527/posdb;user=app;password=sa';
 		RUN 'resources/database/scipio-info.ddl.sql';
 
-		or directly from the command line
-
-		java -Dij.connection.posdb=jdbc:derby://localhost:1527/posdb;username=app;password=sa -jar resources/database/lib/derbyrun.jar ij  \dev\scipio\FloreantPOS\floreantpos\resources\scipio-info.ddl.sql
-
 Run FloreantPOS:
 
 	8. Go to the target directory
 		cd target\floreantpos-1.2-SNAPSHOT-bin\floreantpos-1.2-SNAPSHOT\
 
-	9. Configure scipio.properties
-		cp resources\scipio.properties target\floreantpos-1.2-SNAPSHOT-bin\floreantpos-1.2-SNAPSHOT
-
+	9. Copy scipio.properties to target directory
+		cp resources\scipio.properties  target\floreantpos-1.2-SNAPSHOT-bin\floreantpos-1.2-SNAPSHOT\
+		
 	10. Execute floreantpos.bat
 		floreantpos.bat
 
-
+	
