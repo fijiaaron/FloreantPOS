@@ -22,7 +22,7 @@ public class ScipioInfo extends BaseScipioInfo {
 		super(id);
 	}
 
-/*[CONSTRUCTOR MARKER END]*/
+	/*[CONSTRUCTOR MARKER END]*/
 	
 	
 	public void setTEI(String tei) throws Exception {
