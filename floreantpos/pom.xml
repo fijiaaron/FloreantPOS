@@ -18,8 +18,8 @@
 				<directory>resources</directory>
 				<filtering>true</filtering>
 				<includes>
-					<include>*.properties</include>
-					<include>*.xml</include>
+					<include>**/*.properties</include>
+					<include>**/*.xml</include>
 				</includes>
 				<excludes>
 					<exclude>log4j.properties</exclude>
@@ -32,7 +32,7 @@
 					<exclude>*.properties</exclude>
 					<exclude>*.xml</exclude>
 				</excludes>
-			</resource>
+			</resource>	
 		</resources>
 		<plugins>
 			<plugin>

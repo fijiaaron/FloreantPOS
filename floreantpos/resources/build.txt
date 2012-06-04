@@ -1,0 +1,26 @@
+git clone https://github.com/fijiaaron/FloreantPOS.git
+git checkout scipio
+
+mvn clean install
+
+cd target 
+set TARGET=floreantpos-1.2-SNAPSHOT-bin\floreantpos-1.2-SNAPSHOT
+
+cp classes\scipio.properties %TARGET%
+cp classes\floreantpos.properties %TARGET%
+cp classes\update_posdb.bat %TARGET%
+cp -r classes\database %TARGET%
+
+set RUN=\temp\scipio
+cp -r %TARGET% %RUN%
+cd %RUN%\floreantpos-1.2-SNAPSHOT
+
+cd sample-db
+unzip posdb.zip
+start-server.bat
+
+cd %RUN%\floreantpos-1.2-SNAPSHOT
+
+update_posdb.bat
+floreantpos.bat
+
