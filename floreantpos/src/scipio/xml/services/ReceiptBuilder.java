@@ -127,6 +127,8 @@ public class ReceiptBuilder {
 		
 		/* scipioInfo */
 		ScipioInfo scipioInfo = ticket.getScipioInfo();
+		// removed PEI from UI and must now get it from scipio.properties
+		scipioInfo.setPEI(scipio.getProperty("consumer.pei"));
 		
 		/* consumer */
 		Consumer consumer = new Consumer(scipioInfo.getPEI(), scipioInfo.getPIN(), scipioInfo.getTEI());
