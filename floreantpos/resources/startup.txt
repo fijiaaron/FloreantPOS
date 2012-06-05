@@ -10,7 +10,7 @@ mvn clean install
 ### copy needed files 
 
 cd target 
-set TARGET=floreantpos-scipio-1.2.2-bin\floreantpos-scipio-1.2.2
+set TARGET=floreantpos-1.2-SNAPSHOT-bin\floreantpos-1.2-SNAPSHOT
 
 cp classes\scipio.properties %TARGET%
 cp classes\floreantpos.properties %TARGET%
@@ -24,12 +24,20 @@ set RUN=\temp\scipio
 cp -r %TARGET% %RUN%
 cd %RUN%\floreantpos-1.2-SNAPSHOT
 
+
+### unzip and start the database 
+
 cd sample-db
 unzip posdb.zip
 start-server.bat
 
-cd %RUN%\floreantpos-1.2-SNAPSHOT
+### run the database update script
 
+cd %RUN%\floreantpos-1.2-SNAPSHOT
 update_posdb.bat
+
+### if the floreantpos jar has been renamed, edit floreantpos.bat to match
+### then run floreantpos
+
 floreantpos.bat
 
