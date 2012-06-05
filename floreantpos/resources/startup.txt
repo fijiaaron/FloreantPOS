@@ -1,0 +1,35 @@
+### get the source
+
+git clone https://github.com/fijiaaron/FloreantPOS.git
+git checkout scipio
+
+### build the project
+
+mvn clean install
+
+### copy needed files 
+
+cd target 
+set TARGET=floreantpos-scipio-1.2.2-bin\floreantpos-scipio-1.2.2
+
+cp classes\scipio.properties %TARGET%
+cp classes\floreantpos.properties %TARGET%
+cp classes\update_posdb.bat %TARGET%
+cp -r classes\database %TARGET%
+
+### you can zip up to create a distribution package from target at this point
+### but to run, you still need to update the database
+
+set RUN=\temp\scipio
+cp -r %TARGET% %RUN%
+cd %RUN%\floreantpos-1.2-SNAPSHOT
+
+cd sample-db
+unzip posdb.zip
+start-server.bat
+
+cd %RUN%\floreantpos-1.2-SNAPSHOT
+
+update_posdb.bat
+floreantpos.bat
+
