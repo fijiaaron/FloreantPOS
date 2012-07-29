@@ -26,6 +26,9 @@ public class RestaurantConfigurationView extends ConfigurationView {
 	private JTextField tfCapacity = new JTextField();
 	private JTextField tfTable = new JTextField();
 	
+	//-AE-
+	private JTextField tfSMI = new JTextField();
+	
 	public RestaurantConfigurationView() {
 		setLayout(new MigLayout("align 50% 50%"));
 		
@@ -38,11 +41,18 @@ public class RestaurantConfigurationView extends ConfigurationView {
 		addRow(com.floreantpos.POSConstants.TABLES + ":", tfTable, "w 150");
 		addRow(com.floreantpos.POSConstants.CURRENCY_NAME_, tfCurrencyName, "w 50");
 		addRow(com.floreantpos.POSConstants.CURRENCY_SYMBOL_, tfCurrencySymbol, "w 50");
+		
+		//-AE-
+		addRow(com.floreantpos.POSConstants.SMI, tfSMI, "w 50");
 	}
 
 	@Override
 	public boolean save() throws Exception {
+		System.out.println("...in RestaurantConfigurationView.save()");
+
 		if(!isInitialized()) {
+			System.out.println("not initialized");
+
 			return true;
 		}
 		
@@ -53,6 +63,9 @@ public class RestaurantConfigurationView extends ConfigurationView {
 		String telephone = null;
 		String currencyName = null;
 		String currencySymbol = null;
+		
+		//-AE-
+		Integer smi = null;
 		
 		int capacity = 299;
 		int tables = 74;
@@ -86,6 +99,14 @@ public class RestaurantConfigurationView extends ConfigurationView {
 			return false;
 		}
 
+		//-AE-
+		try {
+			smi = Integer.parseInt(tfSMI.getText());
+			System.out.println("smi: " + smi);
+		} catch (Exception e) {
+			POSMessageDialog.showError(this, com.floreantpos.POSConstants.SMI_IS_NOT_VALID);
+		}
+		
 		restaurant.setName(name);
 		restaurant.setAddressLine1(addr1);
 		restaurant.setAddressLine2(addr2);
@@ -96,8 +117,12 @@ public class RestaurantConfigurationView extends ConfigurationView {
 		restaurant.setCurrencyName(currencyName);
 		restaurant.setCurrencySymbol(currencySymbol);
 		
-		dao.saveOrUpdate(restaurant);
+		//-AE-
+		restaurant.setSmi(smi);
+		System.out.println("restaurant.getSmi()" + restaurant.getSmi());
 		
+		dao.saveOrUpdate(restaurant);
+
 		Application.getInstance().refreshRestaurant();
 		
 		return true;
@@ -105,6 +130,8 @@ public class RestaurantConfigurationView extends ConfigurationView {
 	
 	@Override
 	public void initialize() throws Exception {
+		System.out.println("...in RestaurantConfigurationView.initialize()");
+
 		dao = new RestaurantDAO();
 		restaurant = dao.get(Integer.valueOf(1));
 
@@ -117,6 +144,16 @@ public class RestaurantConfigurationView extends ConfigurationView {
 		tfTable.setText(String.valueOf(restaurant.getTables()));
 		tfCurrencyName.setText(restaurant.getCurrencyName());
 		tfCurrencySymbol.setText(restaurant.getCurrencySymbol());
+		
+		//-AE-
+		System.out.println("getting SMI from restaurant");
+		if (restaurant.getSmi() != null) {
+			tfSMI.setText(String.valueOf(restaurant.getSmi()));
+			System.out.println("tfSMI.getText: " + tfSMI.getText());
+		} else {
+			tfSMI.setText("");
+			System.out.println("tfSMI.getText: " + tfSMI.getText());
+		}
 		
 		setInitialized(true);
 	}
