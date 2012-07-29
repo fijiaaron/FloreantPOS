@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>floreantpos-scipio</groupId>
-	<artifactId>floreantpos-scipio</artifactId>
-	<version>1.2.2</version>
+	<groupId>floreantpos</groupId>
+	<artifactId>floreantpos</artifactId>
+	<version>1.2.2-scipio-1.0.3-w</version>
 
 	<build>
 		<sourceDirectory>src</sourceDirectory>
@@ -270,5 +270,5 @@
 			<url>file://${project.basedir}/local-lib</url>
 		</repository>
 	</repositories>
-    <name>scipio-floreantpos</name>
+    <name>floreantpos-scipio</name>
 </project>
