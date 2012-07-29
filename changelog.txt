@@ -6,7 +6,7 @@ Aaron Evans <aarone@one-shore.com>
 The following changes have been made in this release:
 
 1. ScipioInfo dialog has a numeric touchpad
-2. PIN has been completely removed
+2. PEI has been completely removed
 3. SMI is editable from the Admin dialog
 4. start-server.bat is copied to base folder
 5. Remove everything but AppId and Merchant Store Number from scipio.properies

@@ -33,7 +33,7 @@ Build the project:
 	6. Unzip & start the database
 		cd target\floreantpos-1.2-SNAPSHOT-bin\floreantpos-1.2-SNAPSHOT\sample_db
 		unzip posdb.zip
-		start_server.bat
+		start-server.bat
 		
 	7. Execute db update scripts
 		open another windows

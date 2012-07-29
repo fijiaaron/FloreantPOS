@@ -14,8 +14,11 @@ DONE
 
 3. Configure database
 	- database connection errors.  Crashes on close
+WONTFIX
 
 4. Need to reflect CC type on receipt XML
+	- see #16
+WONTFIX 
 
 5. Admin interface for entering SMI
 	- added SMI to Restaurant
@@ -25,7 +28,6 @@ DONE
 	- done
 	- only clear button, not backspace (same as payment keypad)
 DONE
-
 
 7. track all receipt.xml info
 DONE
@@ -37,9 +39,10 @@ DONE
 FIXED
 
 10. SMI not on paper receipt
-NOTFIX
+WONT IMPLEMENT
+
 11. SMI from restaurant not on xml receipt
-DONE
+FIXED
 
 12. XML
 	card
