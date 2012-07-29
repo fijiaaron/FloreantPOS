@@ -1,7 +1,7 @@
-1. Create FloreantPOS database: (in sample-db folder)
+1. Create FloreantPOS database: 
 	unzip posdb.zip
 
-2. Start FloreantPOS database: (in sample-db folder)
+2. Start FloreantPOS database: 
 	start-server.bat
 
 3. Update FloreantPOS database with Scipio info:
