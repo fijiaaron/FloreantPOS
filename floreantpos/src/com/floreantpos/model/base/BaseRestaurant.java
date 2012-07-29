@@ -29,7 +29,9 @@ public abstract class BaseRestaurant  implements Comparable, Serializable {
 	public static String PROP_NAME = "name";
 	public static String PROP_DRAWER_PULL_HOUR = "drawerPullHour";
 	public static String PROP_ID = "id";
-
+	
+	//-AE-
+	public static String PROP_SMI = "smi";
 
 	// constructors
 	public BaseRestaurant () {
@@ -67,7 +69,10 @@ public abstract class BaseRestaurant  implements Comparable, Serializable {
 	private java.lang.String currencyName;
 	private java.lang.String currencySymbol;
 
+	//-AE-
+	private java.lang.Integer smi;
 
+	
 
 	/**
 	 * Return the unique identifier of this class
@@ -293,6 +298,23 @@ public abstract class BaseRestaurant  implements Comparable, Serializable {
 		this.currencySymbol = currencySymbol;
 	}
 
+	
+	//-AE-
+	/**
+	 * Return the value associated with the column: SMI
+	 */
+	public java.lang.Integer getSmi () {
+			return smi;
+	}
+
+	//-AE-
+	/**
+	 * Set the value related to the column: SMI
+	 * @param smi the SMI value
+	 */
+	public void setSmi (java.lang.Integer smi) {
+		this.smi = smi;
+	}
 
 
 
