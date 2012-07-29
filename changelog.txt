@@ -1,0 +1,26 @@
+Current version: 
+floreantpos-1.2.2-scipio-1.0.4a
+2012-07-28
+Aaron Evans <aarone@one-shore.com>
+
+The following changes have been made in this release:
+
+1. ScipioInfo dialog has a numeric touchpad
+2. PIN has been completely removed
+3. SMI is editable from the Admin dialog
+4. start-server.bat is copied to base folder
+5. Remove everything but AppId and Merchant Store Number from scipio.properies
+6. Set POS name and version in floreantpos.properties
+7. Deploy.bat script for easier startup
+8. Various bug fixes.
+
+The following are known issues with FloreantPOS:
+
+1. There is a bug in FloreantPOS that saves authorization code to card number
+2. There is a bug in FloreantPOS that always saves credit card as MasterCard
+3. FloreantPOS does not record cash tips
+
+The following are known issues with this build that do not exist in mainline FloreantPOS:
+
+1. Configure database dialog says "Database connection error, please configure your database"
+However, this seems to have no functional effect. The database is working fine.
