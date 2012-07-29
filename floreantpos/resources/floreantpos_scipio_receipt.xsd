@@ -50,7 +50,6 @@
         <xs:element name="consumer">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="pei" type="xs:unsignedShort" />
               <xs:element name="pin" type="xs:unsignedShort" />
               <xs:element name="tei" type="xs:unsignedInt" />
             </xs:sequence>

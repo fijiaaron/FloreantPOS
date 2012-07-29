@@ -353,6 +353,11 @@ public class POSConstants {
 	public static final String CAPITAL_NEXT = Messages.getString("SelectionView.1"); //$NON-NLS-1$
 	public static final String CAPITAL_PREV = Messages.getString("SelectionView.2"); //$NON-NLS-1$
         
-        //-AE-
-        public static final String SCIPIO = Messages.getString("Scipio.Display.Name"); //$NON-NLS-1$
+	//-AE-
+	public static final String SCIPIO = Messages.getString("Scipio.Display.Name"); //$NON-NLS-1$
+	public static final String TEI = Messages.getString("Scipio.Customer.TEI"); //$NON-NLS-1$
+	public static final String PIN = Messages.getString("Scipio.Customer.PIN"); //$NON-NLS-1$
+	public static final String SMI = Messages.getString("Scipio.Merchant.SMI"); //$NON-NLS-1$
+	
+	public static final String SMI_IS_NOT_VALID = Messages.getString("Scipio.INVALID_SMI"); //$NON-NLS-1$
 }

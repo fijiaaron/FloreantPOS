@@ -125,10 +125,7 @@ public abstract class BaseRestaurantDAO extends com.floreantpos.model.dao._RootD
 	 * @param restaurant a transient instance containing new or updated state 
 	 */
 	public void saveOrUpdate(com.floreantpos.model.Restaurant restaurant)
-	{
-		System.out.println("in BaseRestaurantDAO.saveOrUpdate()");
-		System.out.println(restaurant.getSmi());
-		
+	{	
 		saveOrUpdate((Object) restaurant);
 	}
 

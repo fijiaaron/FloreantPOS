@@ -5,9 +5,8 @@
     <id column="ID" name="id" type="java.lang.Integer">
       <generator class="identity"/>
     </id>
-    <property column="PEI" name="PEI" type="java.lang.Integer"/>
-    <property column="TEI" name="TEI" type="java.lang.Integer"/>
-    <property column="PIN" name="PIN" type="java.lang.Integer"/>
+    <property column="TEI" name="TEI" type="java.lang.String" length="5"/>
+    <property column="PIN" name="PIN" type="java.lang.String" length="4"/>
     <!-- Associations -->
 	<many-to-one class="com.floreantpos.model.Ticket" name="ticket" not-null="true">
       <column name="TICKET_ID"/>

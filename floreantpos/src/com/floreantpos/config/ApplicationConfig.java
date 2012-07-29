@@ -21,10 +21,17 @@ public class ApplicationConfig {
 	private final static Preferences pref = Preferences.userNodeForPackage(Application.class);
 	
 	private static PropertiesConfiguration configuration;
+	private static PropertiesConfiguration scipioConfig;
 	
 	static {
 		try {
 			configuration = new PropertiesConfiguration(ApplicationConfig.class.getResource("/floreantpos.properties"));
+		} catch (ConfigurationException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			scipioConfig = new PropertiesConfiguration(ApplicationConfig.class.getResource("/scipio.properties"));
 		} catch (ConfigurationException e) {
 			e.printStackTrace();
 		}
@@ -128,5 +135,9 @@ public class ApplicationConfig {
 
 	public static PropertiesConfiguration getConfiguration() {
 		return configuration;
+	}
+	
+	public static PropertiesConfiguration getScipioConfig() {
+		return scipioConfig;
 	}
 }

@@ -22,11 +22,7 @@ import org.apache.commons.logging.LogFactory;
 import com.floreantpos.bo.ui.BackOfficeWindow;
 import com.floreantpos.config.ApplicationConfig;
 import com.floreantpos.config.ui.DatabaseConfigurationDialog;
-import com.floreantpos.model.PrinterConfiguration;
-import com.floreantpos.model.Restaurant;
-import com.floreantpos.model.Shift;
-import com.floreantpos.model.Terminal;
-import com.floreantpos.model.User;
+import com.floreantpos.model.*;
 import com.floreantpos.model.dao.PrinterConfigurationDAO;
 import com.floreantpos.model.dao.RestaurantDAO;
 import com.floreantpos.model.dao.TerminalDAO;
@@ -60,8 +56,13 @@ public class Application {
 	private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM, yyyy");
 	private static ImageIcon applicationIcon;
 
-	public final static String APPNAME = "Floreant POS";
+	//-AE-
+	public final static String APPNAME = ApplicationConfig.getConfiguration().getString("floreantpos.name");
 	public final static String VERSION = ApplicationConfig.getConfiguration().getString("floreantpos.version");
+
+	public static ScipioInfo scipioInfo;
+	
+	public final static String SMI = ApplicationConfig.getScipioConfig().getString("merchant.smi");
 
 	private Application() {
 		applicationIcon = new ImageIcon(getClass().getResource("/icons/icon.png"));

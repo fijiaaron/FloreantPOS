@@ -11,7 +11,6 @@ package com.floreantpos.model.base;
 public class BaseScipioInfo {
 	public static String REF = "ScipioInfo";
 	public static String PROP_ID = "id";
-	public static String PROP_PEI = "pei";
 	public static String PROP_TEI = "tei";
 	public static String PROP_PIN = "pin";
 	public static String PROP_TICKET = "ticket";
@@ -29,7 +28,10 @@ public class BaseScipioInfo {
 		initialize();
 	}
 
-	protected void initialize () {}
+	protected void initialize () {
+		this.TEI = "";
+		this.PIN = "";
+	}
 	
 	private int hashCode = Integer.MIN_VALUE;
 	
@@ -37,13 +39,14 @@ public class BaseScipioInfo {
 	private java.lang.Integer id;
 	
 	// fields
-	private java.lang.Integer PEI;
-	private java.lang.Integer TEI;
-	private java.lang.Integer PIN;
+	private java.lang.String TEI;
+	private java.lang.String PIN;
 	
 	// many to one
 	private com.floreantpos.model.Ticket ticket;
 	
+	private static int TEI_LENGTH = 5;
+	private static int PIN_LENGTH = 4;
 	
 	///////////////////////////////////
 	// getters and setters 
@@ -68,25 +71,11 @@ public class BaseScipioInfo {
 		this.hashCode = Integer.MIN_VALUE;
 	}
 	
-	/**
-	 * Return the value associated with the column: PEI
-	 */
-	public java.lang.Integer getPEI() {
-		return PEI;
-	}
-
-	/**
-	 * Set the value related to the column: PEI
-	 * @param PEI the PEI value
-	 */
-	public void setPEI(java.lang.Integer pei) {
-		PEI = pei;
-	}
 
 	/**
 	 * Return the value associated with the column: TEI
 	 */
-	public java.lang.Integer getTEI() {
+	public java.lang.String getTEI() {
 		return TEI;
 	}
 
@@ -94,14 +83,25 @@ public class BaseScipioInfo {
 	 * Set the value related to the column: TEI
 	 * @param TEI the TEI value
 	 */
-	public void setTEI(java.lang.Integer tei) {
+	public void setTEI(java.lang.String tei) throws Exception {
+		Integer.parseInt(tei);
+		
+		if (tei.length() != TEI_LENGTH) {
+			throw new Exception("TEI must be " + TEI_LENGTH + " digits");
+		}
+		
+		
 		TEI = tei;
 	}
-
+	public void setTEI(java.lang.Integer tei) throws Exception {
+		setTEI(String.valueOf(tei));
+	}
+	
+	
 	/**
 	 * Return the value associated with the column: PIN
 	 */
-	public java.lang.Integer getPIN() {
+	public java.lang.String getPIN() {
 		return PIN;
 	}
 
@@ -109,10 +109,21 @@ public class BaseScipioInfo {
 	 * Set the value related to the column: PIN
 	 * @param PIN the PIN value
 	 */
-	public void setPIN(java.lang.Integer pin) {
+	public void setPIN(java.lang.String pin) throws Exception {
+		Integer.parseInt(pin);
+		
+		if (pin.length() != PIN_LENGTH) {
+			throw new Exception("PIN must be " + PIN_LENGTH + " digits");
+		}
+		
 		PIN = pin;
 	}
+	
+	public void setPIN(java.lang.Integer pin) throws Exception {
+		setPIN(String.valueOf(pin));
+	}
 
+	
 	/**
 	 * Return the value associated with the column: ticket
 	 */

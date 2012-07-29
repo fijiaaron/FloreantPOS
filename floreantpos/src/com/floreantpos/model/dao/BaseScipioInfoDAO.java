@@ -23,7 +23,7 @@ public abstract class BaseScipioInfoDAO extends com.floreantpos.model.dao._RootD
 	}
 	
 	public Order getDefaultOrder () {
-		return Order.asc("PEI");
+		return Order.asc("ID");
     }
 	
 	/**

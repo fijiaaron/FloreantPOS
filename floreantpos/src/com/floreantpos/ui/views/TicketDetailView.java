@@ -272,7 +272,6 @@ public class TicketDetailView extends JPanel implements ActionListener {
 			if ( ! dialog.isCanceled()) {
 				scipioInfo = dialog.getScipioInfo();
 				
-				
 				ticket = scipioInfo.getTicket();
 				ticket.setScipioInfo(scipioInfo);
 				updateModel();

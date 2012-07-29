@@ -6,7 +6,6 @@ public class ScipioInfo extends BaseScipioInfo {
 	private static final long serialVersionUID = 1L;
 	
 	private static int TEI_LENGTH = 5;
-	private static int PEI_LENGTH = 6;
 	private static int PIN_LENGTH = 4;
 	
 	
@@ -25,6 +24,14 @@ public class ScipioInfo extends BaseScipioInfo {
 	/*[CONSTRUCTOR MARKER END]*/
 	
 	
+/***
+	@Override
+	public java.lang.Integer getTEI() {
+		Integer tei = super.getTEI();
+		if (tei == null) { tei = 0; }
+		return tei;
+	}
+	
 	public void setTEI(String tei) throws Exception {
 		if (tei.length() != TEI_LENGTH) {
 			throw new Exception("TEI must be " + TEI_LENGTH + " digits");
@@ -33,12 +40,11 @@ public class ScipioInfo extends BaseScipioInfo {
 		setTEI(Integer.valueOf(tei));
 	}
 	
-	public void setPEI(String pei) throws Exception {
-		if (pei.length() != PEI_LENGTH) {
-			throw new Exception("PEI must be " + PEI_LENGTH + " digits");
-		}
-		
-		setPEI(Integer.valueOf(pei));
+	@Override
+	public java.lang.Integer getPIN() {
+		Integer pin = super.getPIN();
+		if (pin == null) { pin = 0; }
+		return pin;
 	}
 	
 	public void setPIN(String pin) throws Exception {
@@ -48,4 +54,5 @@ public class ScipioInfo extends BaseScipioInfo {
 		
 		setPIN(Integer.valueOf(pin));
 	}
+***/	
 }

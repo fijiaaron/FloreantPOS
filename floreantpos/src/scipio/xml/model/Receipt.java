@@ -99,9 +99,8 @@ import org.apache.log4j.Logger;
  *             &lt;complexContent>
  *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *                 &lt;sequence>
- *                   &lt;element name="pei" type="{http://www.w3.org/2001/XMLSchema}unsignedShort"/>
- *                   &lt;element name="pin" type="{http://www.w3.org/2001/XMLSchema}unsignedShort"/>
- *                   &lt;element name="tei" type="{http://www.w3.org/2001/XMLSchema}unsignedInt"/>
+ *                   &lt;element name="pin" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *                   &lt;element name="tei" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *                 &lt;/sequence>
  *               &lt;/restriction>
  *             &lt;/complexContent>
@@ -529,9 +528,8 @@ public class Receipt {
      *   &lt;complexContent>
      *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
      *       &lt;sequence>
-     *         &lt;element name="pei" type="{http://www.w3.org/2001/XMLSchema}unsignedShort"/>
-     *         &lt;element name="pin" type="{http://www.w3.org/2001/XMLSchema}unsignedShort"/>
-     *         &lt;element name="tei" type="{http://www.w3.org/2001/XMLSchema}unsignedInt"/>
+     *         &lt;element name="pin" type="{http://www.w3.org/2001/XMLSchema}string"/>
+     *         &lt;element name="tei" type="{http://www.w3.org/2001/XMLSchema}string"/>
      *       &lt;/sequence>
      *     &lt;/restriction>
      *   &lt;/complexContent>
@@ -542,53 +540,50 @@ public class Receipt {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-        "pei",
         "pin",
         "tei"
     })
     public static class Consumer {
-
-        @XmlSchemaType(name = "unsignedShort")
-        protected int pei;
-        @XmlSchemaType(name = "unsignedShort")
+        @XmlElement
         protected int pin;
-        @XmlSchemaType(name = "unsignedInt")
+        @XmlElement
         protected long tei;
-        
+		  
         // Constructors
         public Consumer() {}
         
-        public Consumer(int pei, int pin, int tei) { 
-        	setPei(pei); 
+        public Consumer(int pin, int tei) {  
         	setPin(pin); 
         	setTei(tei); 
         } 
-        public Consumer(String pei, String pin, String tei) { 
-        	setPei(pei); 
+        public Consumer(String pin, String tei) { 
         	setPin(pin); 
         	setTei(tei); 
         }
-        
+		
         /**
-         * Gets the value of the pei property.
+         * Gets the value of the tei property.
          * 
          */
-        public int getPei() {
-            return pei;
+        public long getTei() {
+            return tei;
         }
 
         /**
-         * Sets the value of the pei property.
+         * Sets the value of the tei property.
          * 
          */
-        public void setPei(int value) {
-            this.pei = value;
+        public void setTei(long value) {
+            this.tei = value;
         }
-        public void setPei(String value) {
-			try {
-				setPei(Integer.valueOf(value));
+        public void setTei(String value) {
+            try {
+				setTei(Integer.valueOf(value));
 			} catch (NumberFormatException e) { 
-				logger.warn(("invalid PEI: " + value));
+				logger.warn(("invalid TEI: " + value));
+			} catch (Exception e) {
+				logger.warn(("wrong TEI length"));
+				logger.warn(e.getMessage());
 			}
         }
 
@@ -612,30 +607,10 @@ public class Receipt {
 				setPin(Integer.valueOf(value));
 			} catch (NumberFormatException e) { 
 				logger.warn(("invalid PIN: " + value));
-			}            
-        }
-
-        /**
-         * Gets the value of the tei property.
-         * 
-         */
-        public long getTei() {
-            return tei;
-        }
-
-        /**
-         * Sets the value of the tei property.
-         * 
-         */
-        public void setTei(long value) {
-            this.tei = value;
-        }
-        public void setTei(String value) {
-            try {
-				setTei(Integer.valueOf(value));
-			} catch (NumberFormatException e) { 
-				logger.warn(("invalid TEI: " + value));
-			}    
+			} catch (Exception e) {
+				logger.warn(("wrong PIN length"));
+				logger.warn(e.getMessage());
+			}
         }
 
     }

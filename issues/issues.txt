@@ -1,0 +1,63 @@
+issues
+floreantpos-scipio-1.2.2-w
+2012-07-21
+updated floreantpos-1.2.2-scipio-1.0.3-w
+2012-07-28
+
+1. Errors on ReceiptBuilder.java
+	fixed by commenting out extra check
+DONE
+
+2. Reopen ticket
+	- not a problem
+DONE
+
+3. Configure database
+	- database connection errors.  Crashes on close
+
+4. Need to reflect CC type on receipt XML
+
+5. Admin interface for entering SMI
+	- added SMI to Restaurant
+DONE
+
+6. Add numeric keypad to Scipio Info
+	- done
+	- only clear button, not backspace (same as payment keypad)
+DONE
+
+
+7. track all receipt.xml info
+DONE
+
+8. Remove PEI completely
+DONE
+
+9. Window title is "null - Version 1.2.2-scipio-1.0.3-2"
+FIXED
+
+10. SMI not on paper receipt
+NOTFIX
+11. SMI from restaurant not on xml receipt
+DONE
+
+12. XML
+	card
+		cardHolder
+			firstName - not implemented in floreantpos
+			lastName - not implemented in floreantpos
+		expiration - not implmented in floreantpos
+		number - getNumber returns authorizationCode - bug in floreantPOS
+		auses authorization code (not really implemented in floreantpos
+		type - existing bug in floreantpos
+DONE
+
+13. skip scipio info
+	- 0 for tei & pin (expected)
+DONE
+
+14. There is a bug in FloreantPOS that saves authorizationCode to CardNumber
+
+15. There is a bug in FloreantPOS that always saves credit card as MasterCard
+
+16. FloreantPOS does not record cash tips

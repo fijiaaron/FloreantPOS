@@ -114,8 +114,8 @@ public class ReceiptBuilder {
 		/* merchant */
 		Merchant merchant = new Merchant();
 		merchant.setType("restaurant");
-		merchant.setId(scipio.getProperty("merchant.id"));
-		merchant.setSmi(scipio.getProperty("merchant.smi"));
+		merchant.setId(restaurant.getId());
+		merchant.setSmi(restaurant.getSmi());
 		merchant.setAddress(new Address(restaurant.getAddressLine1(), restaurant.getAddressLine2(), restaurant.getAddressLine3()));
 		merchant.setTelephone(restaurant.getTelephone());
 		merchant.setStoreNumber(restaurant.getId());
@@ -127,11 +127,12 @@ public class ReceiptBuilder {
 		
 		/* scipioInfo */
 		ScipioInfo scipioInfo = ticket.getScipioInfo();
-		// removed PEI from UI and must now get it from scipio.properties
-		scipioInfo.setPEI(scipio.getProperty("consumer.pei"));
+		if (scipioInfo == null) {
+			scipioInfo = new ScipioInfo();
+		}
 		
 		/* consumer */
-		Consumer consumer = new Consumer(scipioInfo.getPEI(), scipioInfo.getPIN(), scipioInfo.getTEI());
+		Consumer consumer = new Consumer(scipioInfo.getPIN(), scipioInfo.getTEI());
 		receipt.setConsumer(consumer);
 		
 		/* transaction */
@@ -220,6 +221,7 @@ public class ReceiptBuilder {
 		transaction.setSalestax(salestax);
 		
 		/* tip */
+		//NOTE: FloreantPOS does not record cash tips
 		Gratuity gratuity = ticket.getGratuity();
 		if (gratuity != null) {
 			transaction.setTip(gratuity.getAmount());
@@ -236,24 +238,31 @@ public class ReceiptBuilder {
 		payment.setAmountCharged(ticket.getTotalAmount());
 		payment.setMethod(ticket.getTransactionType());
 		
-		
 		/* credit card */
 		if (ticket.getTransactionType().equals(PosTransaction.TYPE_DEBIT_CARD) || 
 			ticket.getTransactionType().equals(PosTransaction.TYPE_CREDIT_CARD) )
 		{
 			Card cc = new Card();
 			
-			// these are not implemented in FloreantPOS
-			String cardholder = scipio.getProperty("creditcard.cardholder");
-			String expiration = scipio.getProperty("creditcard.expiration");
-			logger.info("cardholder: " + cardholder);
-			logger.info("expiration: " + expiration);
-
+			//NOTE: Card holder is implemented in FloreantPOS.
+			String cardholder = "not implemented";
 			cc.setCardHolder(cardholder);
-			cc.setExpiration(expiration);
 			
+			//NOTE: Card expiration is implemented in FloreantPOS.
+			String expiration = "00/0000";
+			cc.setExpiration(expiration);
+		
+			//NOTE: There is a bug in FloreantPOS that saves authorization code to card number.
+			try {
+				payment.setAuthorizationCode(Long.parseLong(ticket.getCardNumber()));
+			} catch (Exception e) {
+				logger.warn(e.getMessage());
+			}
 			cc.setNumber(ticket.getCardNumber());
+			
+			//NOTE: There is a bug in FloreantPOS that always saves credit card as MasterCard.
 			cc.setType(ticket.getCardType());
+			
 			payment.setCard(cc);
 			
 			if (gratuity != null) {
@@ -295,10 +304,9 @@ public class ReceiptBuilder {
 		merchant.setType(merchantType);
 		
 		
-		String consumerPEI = p.getProperty("consumer.pei");
 		String consumerPIN = p.getProperty("consumer.pin");
 		String consumerTEI = p.getProperty("consumer.tei");
-		Consumer consumer = new Consumer(consumerPEI, consumerPIN, consumerTEI);
+		Consumer consumer = new Consumer(consumerPIN, consumerTEI);
 		
 		String terminalId = p.getProperty("terminal.id");
 		String terminalName = p.getProperty("terminal.name");
