@@ -115,6 +115,11 @@ public class ReceiptBuilder {
 		Merchant merchant = new Merchant();
 		merchant.setType("restaurant");
 		merchant.setId(restaurant.getId());
+		
+		if (restaurant.getSmi() == null) {
+			restaurant.setSmi(0);
+		}
+		
 		merchant.setSmi(restaurant.getSmi());
 		merchant.setAddress(new Address(restaurant.getAddressLine1(), restaurant.getAddressLine2(), restaurant.getAddressLine3()));
 		merchant.setTelephone(restaurant.getTelephone());

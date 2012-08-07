@@ -297,7 +297,7 @@ public class ScipioDialog extends POSDialog {
 		}
 	}
 
-	// temporarily added to workaround Netbeans dialog code generation
+	// added to workaround Netbeans dialog code generation
 	// TODO: edit to just use doOk
 	private void btnOkdoOk(java.awt.event.ActionEvent evt) {
 		doOk(evt);

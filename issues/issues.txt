@@ -64,3 +64,10 @@ DONE
 15. There is a bug in FloreantPOS that always saves credit card as MasterCard
 
 16. FloreantPOS does not record cash tips
+
+17. NPE if SMI is not set
+	java.lang.NullPointerException
+        at scipio.xml.services.ReceiptBuilder.createReceipt(ReceiptBuilder.java: 118)
+FIXED
+
+18. SMI field validation

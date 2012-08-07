@@ -33,6 +33,10 @@ public abstract class BaseRestaurant  implements Comparable, Serializable {
 	//-AE-
 	public static String PROP_SMI = "smi";
 
+	//-AE-
+	private static int SMI_LENGTH = 5;
+	
+	
 	// constructors
 	public BaseRestaurant () {
 		initialize();
@@ -314,6 +318,14 @@ public abstract class BaseRestaurant  implements Comparable, Serializable {
 	 */
 	public void setSmi (java.lang.Integer smi) {
 		this.smi = smi;
+	}
+	public void setSmi(java.lang.String smi) throws Exception {
+				
+		if (smi.length() != SMI_LENGTH) {
+			throw new Exception("SMI must be " + SMI_LENGTH + " digits");
+		}
+		
+		setSmi(Integer.parseInt(smi));
 	}
 
 

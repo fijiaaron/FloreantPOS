@@ -4,8 +4,6 @@ import org.apache.commons.lang.StringUtils;
 
 import com.floreantpos.model.base.BaseRestaurant;
 
-
-
 public class Restaurant extends BaseRestaurant {
 	private static final long serialVersionUID = 1L;
 

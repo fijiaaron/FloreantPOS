@@ -28,7 +28,8 @@ public class RestaurantConfigurationView extends ConfigurationView {
 	
 	//-AE-
 	private JTextField tfSMI = new JTextField();
-	
+	private static int SMI_LENGTH = 5;
+			
 	public RestaurantConfigurationView() {
 		setLayout(new MigLayout("align 50% 50%"));
 		
@@ -100,6 +101,15 @@ public class RestaurantConfigurationView extends ConfigurationView {
 			smi = Integer.parseInt(tfSMI.getText());
 		} catch (Exception e) {
 			POSMessageDialog.showError(this, com.floreantpos.POSConstants.SMI_IS_NOT_VALID);
+			return false;
+		}
+		try {
+			if (tfSMI.getText().length() != SMI_LENGTH) { 
+				throw new Exception("SMI must be " + SMI_LENGTH + " digits");
+			}
+		} catch (Exception e) {
+			POSMessageDialog.showError(this, e.getMessage());
+			return false;
 		}
 		
 		restaurant.setName(name);
