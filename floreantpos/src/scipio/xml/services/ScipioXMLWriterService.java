@@ -101,7 +101,7 @@ public class ScipioXMLWriterService {
 	public String getReceiptFileName(Ticket ticket) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmssSSS");
 		String closeDate = dateFormat.format(ticket.getClosingDate());
-		String receiptFileName = "receipt_" + closeDate + ticket.getId() + ".xml";
+		String receiptFileName = "receipt_" + closeDate + "_" + ticket.getId() + ".xml";
 		
 		return receiptFileName;
 	}
