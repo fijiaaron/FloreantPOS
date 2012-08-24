@@ -37,9 +37,8 @@ public class RestaurantConfigurationView extends ConfigurationView {
 	
 	//-AE-
 	private static int SMI_LENGTH = 6;
-	private static int TERMINAL_ID_LENGTH = 5;
 	private JFormattedTextField tfSMI = new JFormattedTextField(createFormatter(SMI_LENGTH));
-	private JFormattedTextField tfTerminal = new JFormattedTextField(createFormatter(TERMINAL_ID_LENGTH));
+	private JFormattedTextField tfTerminal = new JFormattedTextField();
 	
 	public RestaurantConfigurationView() {
 		setLayout(new MigLayout("align 50% 50%"));
@@ -90,7 +89,7 @@ public class RestaurantConfigurationView extends ConfigurationView {
 		
 		//-AE-
 		Integer smi = null;
-		Integer terminalNumber = null;
+		String terminalName = null;
 		
 		int capacity = 299;
 		int tables = 74;
@@ -140,11 +139,8 @@ public class RestaurantConfigurationView extends ConfigurationView {
 			return false;
 		}
 		
-		try {
-			terminalNumber = Integer.parseInt(tfTerminal.getText());
-		} catch (Exception e) {
-			POSMessageDialog.showError(this, com.floreantpos.POSConstants.TERMINAL_ID_IS_NOT_VALID);
-		}
+		terminalName = tfTerminal.getText();
+		
 		restaurant.setName(name);
 		restaurant.setAddressLine1(addr1);
 		restaurant.setAddressLine2(addr2);
@@ -157,9 +153,13 @@ public class RestaurantConfigurationView extends ConfigurationView {
 		
 		//-AE-
 		restaurant.setSmi(smi);
-		
+	
 		dao.saveOrUpdate(restaurant);
 
+		//-AE-
+		terminal.setName(terminalName);
+		terminalDAO.saveOrUpdate(terminal);
+		
 		Application.getInstance().refreshRestaurant();
 		
 		return true;
@@ -170,6 +170,10 @@ public class RestaurantConfigurationView extends ConfigurationView {
 		dao = new RestaurantDAO();
 		restaurant = dao.get(Integer.valueOf(1));
 
+		//-AE-
+		terminalDAO = new TerminalDAO();
+		terminal = terminalDAO.get(Integer.valueOf(1));
+		
 		tfRestaurantName.setText(restaurant.getName());
 		tfAddressLine1.setText(restaurant.getAddressLine1());
 		tfAddressLine2.setText(restaurant.getAddressLine2());
@@ -185,6 +189,12 @@ public class RestaurantConfigurationView extends ConfigurationView {
 			tfSMI.setText(String.valueOf(restaurant.getSmi()));
 		} else {
 			tfSMI.setText("");
+		}
+		
+		if (terminal.getName() != null) {
+			tfTerminal.setText(String.valueOf(terminal.getName()));
+		} else {
+			tfTerminal.setText("");
 		}
 		
 		setInitialized(true);

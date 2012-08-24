@@ -359,5 +359,4 @@ public class POSConstants {
 	public static final String PIN = Messages.getString("Scipio.Customer.PIN"); //$NON-NLS-1$
 	public static final String SMI = Messages.getString("Scipio.Merchant.SMI"); //$NON-NLS-1$
 	public static final String SMI_IS_NOT_VALID = Messages.getString("Scipio.INVALID_SMI"); //$NON-NLS-1$
-	public static final String TERMINAL_ID_IS_NOT_VALID = Messages.getString("Scipio.INVALID_TERMINAL_ID"); //$NON-NLS-1$
 }
