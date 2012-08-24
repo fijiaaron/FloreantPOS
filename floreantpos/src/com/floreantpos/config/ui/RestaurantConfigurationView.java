@@ -8,13 +8,22 @@ import net.miginfocom.swing.MigLayout;
 
 import com.floreantpos.main.Application;
 import com.floreantpos.model.Restaurant;
+import com.floreantpos.model.Terminal;
 import com.floreantpos.model.dao.RestaurantDAO;
+import com.floreantpos.model.dao.TerminalDAO;
 import com.floreantpos.swing.FixedLengthTextField;
 import com.floreantpos.ui.dialog.POSMessageDialog;
+import java.text.ParseException;
+import javax.swing.JFormattedTextField;
+import javax.swing.text.MaskFormatter;
 
 public class RestaurantConfigurationView extends ConfigurationView {
 	private RestaurantDAO dao;
 	private Restaurant restaurant;
+	
+	//-AE-
+	private TerminalDAO terminalDAO;
+	private Terminal terminal;
 	
 	private JTextField tfRestaurantName = new FixedLengthTextField(40);
 	private JTextField tfAddressLine1 = new FixedLengthTextField(20);
@@ -27,9 +36,11 @@ public class RestaurantConfigurationView extends ConfigurationView {
 	private JTextField tfTable = new JTextField();
 	
 	//-AE-
-	private JTextField tfSMI = new JTextField();
-	private static int SMI_LENGTH = 5;
-			
+	private static int SMI_LENGTH = 6;
+	private static int TERMINAL_ID_LENGTH = 5;
+	private JFormattedTextField tfSMI = new JFormattedTextField(createFormatter(SMI_LENGTH));
+	private JFormattedTextField tfTerminal = new JFormattedTextField(createFormatter(TERMINAL_ID_LENGTH));
+	
 	public RestaurantConfigurationView() {
 		setLayout(new MigLayout("align 50% 50%"));
 		
@@ -45,8 +56,24 @@ public class RestaurantConfigurationView extends ConfigurationView {
 		
 		//-AE-
 		addRow(com.floreantpos.POSConstants.SMI, tfSMI, "w 50");
+		addRow(com.floreantpos.POSConstants.TERMINAL, tfTerminal, "w 50");
 	}
 
+	//-AE-
+	private MaskFormatter createFormatter(int length) {
+		String mask = StringUtils.repeat("#", length);
+		MaskFormatter formatter = null;
+		
+		try {
+			formatter = new MaskFormatter(mask);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			formatter = new MaskFormatter();
+		}
+		
+		return formatter;
+	}
+		
 	@Override
 	public boolean save() throws Exception {
 		if(!isInitialized()) {
@@ -63,6 +90,7 @@ public class RestaurantConfigurationView extends ConfigurationView {
 		
 		//-AE-
 		Integer smi = null;
+		Integer terminalNumber = null;
 		
 		int capacity = 299;
 		int tables = 74;
@@ -112,6 +140,11 @@ public class RestaurantConfigurationView extends ConfigurationView {
 			return false;
 		}
 		
+		try {
+			terminalNumber = Integer.parseInt(tfTerminal.getText());
+		} catch (Exception e) {
+			POSMessageDialog.showError(this, com.floreantpos.POSConstants.TERMINAL_ID_IS_NOT_VALID);
+		}
 		restaurant.setName(name);
 		restaurant.setAddressLine1(addr1);
 		restaurant.setAddressLine2(addr2);

@@ -176,6 +176,9 @@
           <Dimension value="[24, 20]"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JFormattedTextField(createFormatter(ScipioInfo.TEI_LENGTH))"/>
+      </AuxValues>
     </Component>
     <Component class="javax.swing.JFormattedTextField" name="txtPIN">
       <Properties>
@@ -189,6 +192,9 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtPINActionPerformed"/>
       </Events>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JFormattedTextField(createFormatter(ScipioInfo.PIN_LENGTH))"/>
+      </AuxValues>
     </Component>
     <Container class="javax.swing.JPanel" name="buttonPanel">
       <Properties>

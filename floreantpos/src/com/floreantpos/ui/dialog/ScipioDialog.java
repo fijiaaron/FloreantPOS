@@ -13,6 +13,7 @@ import com.floreantpos.model.Ticket;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import org.apache.commons.lang.StringUtils;
 
 /**
  *
@@ -39,39 +40,40 @@ public class ScipioDialog extends POSDialog {
     private com.floreantpos.swing.PosButton buttonClear;
     private javax.swing.JPanel buttonPanel;
     private javax.swing.JInternalFrame jInternalFrame1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JLabel lblPIN;
     private javax.swing.JLabel lblTEI;
     private com.floreantpos.ui.TitlePanel titlePanel1;
     private javax.swing.JFormattedTextField txtPIN;
     private javax.swing.JFormattedTextField txtTEI;
     // End of variables declaration//GEN-END:variables
-	
-    MaskFormatter teiFormatter = null;
-    MaskFormatter pinFormatter = null;
-    
-	
-	
+
 	/**
 	 * Creates new form ScipioDialog
 	 */
 	public ScipioDialog() {
 		super(Application.getPosWindow(), true, false);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-	
-        try {
-		teiFormatter = new MaskFormatter("#####");
-		pinFormatter = new MaskFormatter("####");
-			
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+
         
 		initComponents();
 		setResizable(false);
 		pack();
 	}
 
+	private MaskFormatter createFormatter(int length) {
+		String mask = StringUtils.repeat("#", length);
+		MaskFormatter formatter = null;
+		
+		try {
+			formatter = new MaskFormatter(mask);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			formatter = new MaskFormatter();
+		}
+		
+		return formatter;
+	}
+	
 	/**
 	 * This method is called from within the constructor to initialize the form.
 	 * WARNING: Do NOT modify this code. The content of this method is always
@@ -86,8 +88,8 @@ public class ScipioDialog extends POSDialog {
         btnOk = new com.floreantpos.swing.PosButton();
         lblTEI = new javax.swing.JLabel();
         lblPIN = new javax.swing.JLabel();
-        txtTEI = new javax.swing.JFormattedTextField();
-        txtPIN = new javax.swing.JFormattedTextField();
+        txtTEI = new javax.swing.JFormattedTextField(createFormatter(ScipioInfo.TEI_LENGTH));
+        txtPIN = new javax.swing.JFormattedTextField(createFormatter(ScipioInfo.PIN_LENGTH));
         buttonPanel = new javax.swing.JPanel();
         button7 = new com.floreantpos.swing.PosButton();
         button8 = new com.floreantpos.swing.PosButton();

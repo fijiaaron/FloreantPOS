@@ -2,8 +2,8 @@
 CREATE TABLE SCIPIO_INFO 
 (
   ID               INTEGER GENERATED ALWAYS AS IDENTITY (START WITH 1,INCREMENT BY 1),
-  TEI              VARCHAR(5),
-  PIN              VARCHAR(4),
+  TEI              INTEGER,
+  PIN              INTEGER,
   TICKET_ID        INTEGER
 );
 

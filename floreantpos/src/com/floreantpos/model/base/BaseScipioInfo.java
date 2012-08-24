@@ -45,8 +45,8 @@ public class BaseScipioInfo {
 	// many to one
 	private com.floreantpos.model.Ticket ticket;
 	
-	private static int TEI_LENGTH = 5;
-	private static int PIN_LENGTH = 4;
+	public static int TEI_LENGTH = 8;
+	public static int PIN_LENGTH = 4;
 	
 	///////////////////////////////////
 	// getters and setters 

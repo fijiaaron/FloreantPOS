@@ -2106,7 +2106,7 @@ public class Receipt {
 	        	}
         	}
         	
-        	return subtotal.setScale(Receipt.DECIMAL_PLACES);
+        	return subtotal.setScale(Receipt.DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP);
         }
 
         /**
@@ -2137,7 +2137,7 @@ public class Receipt {
         		discount = discounts.getValue();
         	}
         	
-            return discount.setScale(Receipt.DECIMAL_PLACES);
+            return discount.setScale(Receipt.DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP);
         }
 
         /**
@@ -2169,7 +2169,7 @@ public class Receipt {
         		total = getSubtotal().subtract(getDiscount());
         	}
         	
-            return total.setScale(Receipt.DECIMAL_PLACES);
+            return total.setScale(Receipt.DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP);
         }
 
         /**
@@ -2224,7 +2224,7 @@ public class Receipt {
         		tax = getSalestax().getTotal();
         	}
         	
-            return tax.setScale(Receipt.DECIMAL_PLACES);
+            return tax.setScale(Receipt.DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP);
         }
 
         /**
@@ -2255,7 +2255,7 @@ public class Receipt {
         		tip = Util.decimal(0.00);
         	}
         	
-            return tip.setScale(Receipt.DECIMAL_PLACES);
+            return tip.setScale(Receipt.DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP);
         }
 
         /**
@@ -2288,7 +2288,7 @@ public class Receipt {
             	grandTotal = grandTotal.add(getTip());
             }
             
-            return grandTotal.setScale(Receipt.DECIMAL_PLACES);
+            return grandTotal.setScale(Receipt.DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP);
         }
 
         /**
@@ -2356,7 +2356,7 @@ public class Receipt {
          *     
          */
         public BigDecimal getAmountPaid() {
-            return amountPaid.setScale(Receipt.DECIMAL_PLACES);
+            return amountPaid.setScale(Receipt.DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP);
         }
 
         /**
@@ -3400,7 +3400,7 @@ public class Receipt {
              *     
              */
             public BigDecimal getRate() {
-                return rate.setScale(Receipt.DECIMAL_PLACES);
+                return rate.setScale(Receipt.DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP);
             }
 
             /**
@@ -3427,7 +3427,7 @@ public class Receipt {
              *     
              */
             public BigDecimal getTaxableAmount() {
-                return taxableAmount.setScale(Receipt.DECIMAL_PLACES);
+                return taxableAmount.setScale(Receipt.DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP);
             }
 
             /**
@@ -3456,10 +3456,10 @@ public class Receipt {
             public BigDecimal getTotal() {
             	if (total == null) {
 					BigDecimal taxRate = Util.divide(getRate(), 100);
-            		total = getTaxableAmount().multiply(taxRate).setScale(Receipt.DECIMAL_PLACES);
+            		total = getTaxableAmount().multiply(taxRate).setScale(Receipt.DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP);
             	}
             	
-                return total.setScale(Receipt.DECIMAL_PLACES);
+                return total.setScale(Receipt.DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP);
             }
 
             /**

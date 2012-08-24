@@ -5,10 +5,6 @@ import com.floreantpos.model.base.BaseScipioInfo;
 public class ScipioInfo extends BaseScipioInfo {
 	private static final long serialVersionUID = 1L;
 	
-	private static int TEI_LENGTH = 5;
-	private static int PIN_LENGTH = 4;
-	
-	
 	/*[CONSTRUCTOR MARKER BEGIN]*/
 	public ScipioInfo () {
 		super();

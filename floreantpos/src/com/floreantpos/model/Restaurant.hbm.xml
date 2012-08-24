@@ -17,6 +17,6 @@
     <property column="DRAWER_PULL_MIN" name="drawerPullMin" type="java.lang.Integer"/>
     <property column="CNAME" length="20" name="currencyName" type="string"/>
     <property column="CSYMBOL" length="10" name="currencySymbol" type="string"/>
-	<property column="SMI" length="5" name="smi" type="java.lang.Integer"/>
+	<property column="SMI" length="6" name="smi" type="java.lang.Integer"/>
   </class>
 </hibernate-mapping>
