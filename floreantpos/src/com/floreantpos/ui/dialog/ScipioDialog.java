@@ -88,8 +88,11 @@ public class ScipioDialog extends POSDialog {
         btnOk = new com.floreantpos.swing.PosButton();
         lblTEI = new javax.swing.JLabel();
         lblPIN = new javax.swing.JLabel();
-        txtTEI = new javax.swing.JFormattedTextField(createFormatter(ScipioInfo.TEI_LENGTH));
-        txtPIN = new javax.swing.JFormattedTextField(createFormatter(ScipioInfo.PIN_LENGTH));
+        // MaskFormatter inhibits keypad
+		//txtTEI = new javax.swing.JFormattedTextField(createFormatter(ScipioInfo.TEI_LENGTH));
+        //txtPIN = new javax.swing.JFormattedTextField(createFormatter(ScipioInfo.PIN_LENGTH));
+        txtTEI = new javax.swing.JFormattedTextField();
+        txtPIN = new javax.swing.JFormattedTextField();
         buttonPanel = new javax.swing.JPanel();
         button7 = new com.floreantpos.swing.PosButton();
         button8 = new com.floreantpos.swing.PosButton();

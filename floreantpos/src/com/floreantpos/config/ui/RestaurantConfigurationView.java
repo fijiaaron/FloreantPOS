@@ -1,5 +1,6 @@
 package com.floreantpos.config.ui;
 
+import com.floreantpos.config.ApplicationConfig;
 import javax.swing.JTextField;
 
 import org.apache.commons.lang.StringUtils;
@@ -37,7 +38,8 @@ public class RestaurantConfigurationView extends ConfigurationView {
 	
 	//-AE-
 	private static int SMI_LENGTH = 6;
-	private JFormattedTextField tfSMI = new JFormattedTextField(createFormatter(SMI_LENGTH));
+	//private JFormattedTextField tfSMI = new JFormattedTextField(createFormatter(SMI_LENGTH)); // inhibits touchpad
+	private JFormattedTextField tfSMI = new JFormattedTextField();
 	private JFormattedTextField tfTerminal = new JFormattedTextField();
 	
 	public RestaurantConfigurationView() {
@@ -172,7 +174,7 @@ public class RestaurantConfigurationView extends ConfigurationView {
 
 		//-AE-
 		terminalDAO = new TerminalDAO();
-		terminal = terminalDAO.get(Integer.valueOf(1));
+		terminal = terminalDAO.get(ApplicationConfig.getTerminalId());
 		
 		tfRestaurantName.setText(restaurant.getName());
 		tfAddressLine1.setText(restaurant.getAddressLine1());
